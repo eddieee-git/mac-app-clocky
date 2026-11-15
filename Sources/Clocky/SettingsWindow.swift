@@ -6,16 +6,16 @@ import UniformTypeIdentifiers
 final class SettingsWindowController {
     private let settings: ClockySettings
     private let calendar: CalendarSync
-    private let updater: UpdateChecker?
+    private let showsUpdates: Bool
     private var window: NSWindow?
     private var levelObservers: [NSObjectProtocol] = []
     /// 어느 탭을 보여 줄지. 다른 창에서 특정 탭을 바로 열 때 바꾼다.
     private let navigation = SettingsNavigation()
 
-    init(settings: ClockySettings, calendar: CalendarSync, updater: UpdateChecker? = nil) {
+    init(settings: ClockySettings, calendar: CalendarSync, showsUpdates: Bool = false) {
         self.settings = settings
         self.calendar = calendar
-        self.updater = updater
+        self.showsUpdates = showsUpdates
         NotificationCenter.default.addObserver(forName: Localization.didChange, object: nil, queue: .main) { [weak self] _ in
             self?.window?.title = L("Clocky 설정")
         }
@@ -32,7 +32,7 @@ final class SettingsWindowController {
             w.title = L("Clocky 설정")
             w.isReleasedWhenClosed = false
             levelObservers = floatWhileActive(w)
-            w.contentView = NSHostingView(rootView: SettingsView(settings: settings, calendar: calendar, updater: updater, navigation: navigation))
+            w.contentView = NSHostingView(rootView: SettingsView(settings: settings, calendar: calendar, showsUpdates: showsUpdates, navigation: navigation))
             w.center()
             window = w
         }
@@ -77,13 +77,13 @@ struct SettingsView: View {
     @ObservedObject var settings: ClockySettings
     @ObservedObject var calendar: CalendarSync
     @ObservedObject var navigation: SettingsNavigation
-    /// 없으면(시험) 업데이트 칸을 감춘다.
-    let updater: UpdateChecker?
+    /// false면(시험) 업데이트 칸을 감춘다.
+    let showsUpdates: Bool
 
-    init(settings: ClockySettings, calendar: CalendarSync, updater: UpdateChecker? = nil, navigation: SettingsNavigation) {
+    init(settings: ClockySettings, calendar: CalendarSync, showsUpdates: Bool = false, navigation: SettingsNavigation) {
         self.settings = settings
         self.calendar = calendar
-        self.updater = updater
+        self.showsUpdates = showsUpdates
         self.navigation = navigation
     }
 
@@ -128,7 +128,7 @@ struct SettingsView: View {
                 Toggle(L("타이머 남은 시간 표시"), isOn: $settings.menuBarShowsTimer)
                 Toggle(L("1시간 안에 울릴 알람까지 남은 시간 표시"), isOn: $settings.menuBarShowsAlarm)
             }
-            if let updater { UpdateSection(settings: settings, updater: updater) }
+            if showsUpdates { AppUpdaterSection(updater: .shared) }
         }
         .formStyle(.grouped)
     }
@@ -636,45 +636,3 @@ private struct MacCalendarSection: View {
     }
 }
 
-/// 설정 > 일반의 업데이트 칸.
-struct UpdateSection: View {
-    @ObservedObject var settings: ClockySettings
-    @ObservedObject var updater: UpdateChecker
-
-    var body: some View {
-        Section {
-            Toggle(L("업데이트 자동 확인"), isOn: $settings.checkForUpdates)
-            LabeledContent(L("버전 %@", AppVersion.current)) {
-                HStack {
-                    if updater.isChecking || updater.isDownloading { ProgressView().controlSize(.small) }
-                    if let release = updater.available {
-                        Button(L("Clocky %@ 받기…", release.version)) { updater.offer(release) }
-                            .disabled(updater.isDownloading)
-                    } else {
-                        Button(L("지금 확인")) { updater.checkAndReport() }
-                            .disabled(updater.isChecking)
-                    }
-                }
-            }
-        } header: {
-            Text(L("업데이트"))
-        } footer: {
-            Text(status)
-                .font(.caption)
-                .foregroundStyle(.secondary)
-        }
-    }
-
-    private var status: String {
-        var lines: [String] = []
-        if updater.isDownloading {
-            lines.append(L("다운로드하는 중…"))
-        } else if let error = updater.error {
-            lines.append(L("확인하지 못했습니다: %@", error))
-        } else if let lastCheck = updater.lastCheck {
-            lines.append(L("마지막 확인: %@", lastCheck.formatted(Date.FormatStyle(date: .abbreviated, time: .shortened).locale(settings.locale))))
-        }
-        lines.append(L("GitHub에 새 버전이 있는지만 묻습니다. 일정이나 설정은 보내지 않고, GitHub는 여느 웹 요청처럼 IP 주소와 Clocky 버전을 봅니다."))
-        return lines.joined(separator: "\n")
-    }
-}

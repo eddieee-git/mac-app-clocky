@@ -31,7 +31,6 @@ final class ClockySettings: ObservableObject {
         static let calendarFeeds = "calendarFeeds", calendarLead = "calendarLeadMinutes"
         static let calendarAllDay = "calendarIncludeAllDay", calendarDeclined = "calendarIncludeDeclined"
         static let macCalendar = "macCalendarEnabled", macCalendarIDs = "macCalendarIDs"
-        static let checkForUpdates = "checkForUpdates"
     }
     static let warningChoices = [0, 5, 10, 30, 60]
     static let snoozeChoices = [1, 3, 5, 10, 15, 30]
@@ -94,7 +93,6 @@ final class ClockySettings: ObservableObject {
         }
     }
     /// 하루에 한 번 GitHub에 새 버전이 있는지 묻는다.
-    @Published var checkForUpdates: Bool { didSet { defaults.set(checkForUpdates, forKey: Keys.checkForUpdates) } }
     /// 다른 앱이 이미 쓰는 등의 이유로 등록하지 못한 단축키.
     @Published var failedHotKeys: Set<HotKeyAction> = []
     /// 단축키를 새로 누르는 동안에는 등록을 풀어 둔다. 그래야 지금 단축키도 다시 고를 수 있다.
@@ -125,7 +123,6 @@ final class ClockySettings: ObservableObject {
         calendarIncludeDeclined = defaults.bool(forKey: Keys.calendarDeclined)
         macCalendarEnabled = defaults.bool(forKey: Keys.macCalendar)
         macCalendarIDs = defaults.stringArray(forKey: Keys.macCalendarIDs)
-        checkForUpdates = defaults.object(forKey: Keys.checkForUpdates) as? Bool ?? true
         hotKeys = defaults.data(forKey: Keys.hotKeys).flatMap { try? JSONDecoder().decode([String: KeyCombo].self, from: $0) }
             ?? KeyCombo.defaults
         Localization.language = language
