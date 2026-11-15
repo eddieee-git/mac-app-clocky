@@ -304,9 +304,9 @@ private struct ClockListSidebar: View {
             .overlay {
                 if timers.isEmpty && alarms.isEmpty && events.isEmpty {
                     VStack(spacing: 10) {
-                        Text(!model.query.isEmpty ? L("찾는 항목이 없습니다")
-                             : model.filter == .calendar ? (settings.calendarFeeds.isEmpty ? L("설정 → 캘린더에서 구글 캘린더를 연결하세요") : L("이틀 안에 일정이 없습니다"))
-                             : L("등록된 알람이 없습니다"))
+                        Text(!model.query.isEmpty ? L("찾는 항목이 없어요")
+                             : model.filter == .calendar ? (settings.calendarFeeds.isEmpty ? L("설정 → 캘린더에서 구글 캘린더를 연결하세요") : L("이틀 안에 일정이 없어요"))
+                             : L("등록된 알람이 없어요"))
                             .multilineTextAlignment(.center)
                             .foregroundStyle(.secondary)
                         if model.query.isEmpty && model.filter == .calendar && settings.calendarFeeds.isEmpty {
@@ -426,7 +426,7 @@ private struct EventDetail: View {
                     Toggle(L("이번 일정 알림"), isOn: Binding(get: { !store.skippedEventIDs.contains(event.id) },
                                                          set: { store.setEventSkipped(event.id, !$0) }))
                 } footer: {
-                    Text(L("일정은 구글 캘린더에서 고칩니다. 알림 시점은 설정 → 캘린더에서 바꿉니다."))
+                    Text(L("일정은 구글 캘린더에서 고쳐요. 알림 시점은 설정 → 캘린더에서 바꿔요."))
                         .font(.caption)
                         .foregroundStyle(.secondary)
                 }
@@ -568,7 +568,7 @@ private struct TimerDetail: View {
                     }
                     .controlSize(.small)
                 } footer: {
-                    Text(L("분, 분:초, 또는 시:분:초로 입력하고 Return을 누릅니다. 시간을 바꾸면 처음부터 다시 셉니다."))
+                    Text(L("분, 분:초, 또는 시:분:초로 입력하고 Return을 눌러요. 시간을 바꾸면 처음부터 다시 세요."))
                         .font(.caption)
                         .foregroundStyle(.secondary)
                 }

@@ -320,7 +320,7 @@ final class ClockStore: ObservableObject {
 
     private static func keepUnreadable(_ data: Data, key: String, in defaults: UserDefaults) {
         defaults.set(data, forKey: key + "Unreadable")
-        NSLog("Clocky: 저장된 %@ 값을 읽지 못해 %@Unreadable에 남겨 두었습니다.", key, key)
+        NSLog("Clocky: 저장된 %@ 값을 읽지 못해 %@Unreadable에 남겨 두었어요.", key, key)
     }
 
     /// 예전 판은 새 항목에 "타이머 2"처럼 그때의 언어로 이름을 박아 두었다. 그런 이름은 비우고 번호만 남긴다.

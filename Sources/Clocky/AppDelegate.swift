@@ -117,7 +117,6 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
         menu.addItem(.separator())
         menu.addItem(withTitle: L("전체 목록…"), action: #selector(showList), keyEquivalent: "l").target = self
         menu.addItem(withTitle: L("설정…"), action: #selector(showSettings), keyEquivalent: ",").target = self
-        menu.addItem(.separator())
         menu.addItem(AppUpdater.shared.makeMenuItem())
         menu.addItem(.separator())
         menu.addItem(withTitle: L("Clocky 종료"), action: #selector(NSApplication.terminate(_:)), keyEquivalent: "q")
@@ -271,7 +270,7 @@ enum InstallLocation {
         NSApp.activate(ignoringOtherApps: true)
         let alert = NSAlert()
         alert.messageText = L("Clocky를 Applications 폴더로 옮겨 주세요")
-        alert.informativeText = L("지금 디스크 이미지(dmg)에서 바로 실행하고 있습니다. 이대로는 dmg를 꺼내면 Clocky도 꺼지고, 로그인 시 자동 실행도 되지 않습니다.\n\nClocky를 종료한 뒤 dmg 창에서 Clocky를 Applications 폴더로 끌어 놓고, Applications 폴더에서 다시 여세요.")
+        alert.informativeText = L("지금 디스크 이미지(dmg)에서 바로 실행하고 있어요. 이대로는 dmg를 꺼내면 Clocky도 꺼지고, 로그인 시 자동 실행도 되지 않아요.\n\nClocky를 종료한 뒤 dmg 창에서 Clocky를 Applications 폴더로 끌어 놓고, Applications 폴더에서 다시 여세요.")
         alert.addButton(withTitle: L("종료하고 Applications 폴더 열기"))
         alert.addButton(withTitle: L("이대로 계속"))
         if alert.runModal() == .alertFirstButtonReturn {

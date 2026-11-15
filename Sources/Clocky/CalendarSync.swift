@@ -172,7 +172,7 @@ final class CalendarSync: ObservableObject {
         var pending = feeds.count
         for feed in feeds {
             guard case .success(let url) = Self.normalizedURL(feed.url) else {
-                statuses[feed.id, default: Status()].error = L("주소가 올바르지 않습니다.")
+                statuses[feed.id, default: Status()].error = L("주소가 올바르지 않아요.")
                 pending -= 1
                 continue
             }
@@ -266,11 +266,11 @@ final class CalendarSync: ObservableObject {
             if let http = response as? HTTPURLResponse {
                 if http.statusCode == 304 { return .notModified }
                 guard (200..<300).contains(http.statusCode) else {
-                    return .failure(http.statusCode == 404 ? L("주소를 찾을 수 없습니다. 비공개 주소를 다시 복사해 주세요.")
+                    return .failure(http.statusCode == 404 ? L("주소를 찾을 수 없어요. 비공개 주소를 다시 복사해 주세요.")
                                                           : L("서버 응답 %d", http.statusCode))
                 }
             }
-            if response.expectedContentLength > Int64(maxBytes) { return .failure(L("파일이 너무 큽니다.")) }
+            if response.expectedContentLength > Int64(maxBytes) { return .failure(L("파일이 너무 커요.")) }
             var data = Data()
             data.reserveCapacity(max(0, min(Int(response.expectedContentLength), maxBytes)))
             var chunk = [UInt8]()
@@ -280,13 +280,13 @@ final class CalendarSync: ObservableObject {
                 if chunk.count == 64 * 1024 {
                     data.append(contentsOf: chunk)
                     chunk.removeAll(keepingCapacity: true)
-                    if data.count > maxBytes { return .failure(L("파일이 너무 큽니다.")) }
+                    if data.count > maxBytes { return .failure(L("파일이 너무 커요.")) }
                 }
             }
             data.append(contentsOf: chunk)
-            guard data.count <= maxBytes else { return .failure(L("파일이 너무 큽니다.")) }
+            guard data.count <= maxBytes else { return .failure(L("파일이 너무 커요.")) }
             guard let body = String(data: data, encoding: .utf8) ?? String(data: data, encoding: .isoLatin1),
-                  body.contains("BEGIN:VCALENDAR") else { return .failure(L("iCal 형식이 아닙니다.")) }
+                  body.contains("BEGIN:VCALENDAR") else { return .failure(L("iCal 형식이 아니에요.")) }
             let tag = (response as? HTTPURLResponse)?.value(forHTTPHeaderField: "ETag")
             return .text(body, etag: tag)
         } catch {

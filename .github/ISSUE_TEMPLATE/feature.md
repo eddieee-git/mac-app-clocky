@@ -11,5 +11,5 @@ labels: enhancement
 
 
 **참고 · Anything else**
-<!-- Clocky는 Apple 계정이 필요한 기능(iCloud 동기화, 알림 센터 등)은 쓰지 않습니다.
-     Clocky doesn't use features that need an Apple account, such as iCloud sync or Notification Center. -->
+<!-- Clocky는 Apple 계정이 필요한 기능(iCloud 동기화, 공증 등)은 쓰지 않아요.
+     Clocky doesn't use features that need an Apple account, such as iCloud sync or notarization. -->

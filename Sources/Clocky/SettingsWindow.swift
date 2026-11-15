@@ -72,6 +72,7 @@ struct SettingsView: View {
         case sound = "소리"
         case calendar = "캘린더"
         case shortcuts = "단축키"
+        case about = "정보"
     }
 
     @ObservedObject var settings: ClockySettings
@@ -109,6 +110,9 @@ struct SettingsView: View {
             case .sound: sound
             case .calendar: CalendarSettings(settings: settings, sync: calendar)
             case .shortcuts: shortcuts
+            case .about:
+                Form { AppAboutSections(appName: "Clocky", english: settings.language == .english) }
+                    .formStyle(.grouped)
             }
         }
         .frame(width: 640, height: 480, alignment: .top)
@@ -150,14 +154,14 @@ struct SettingsView: View {
                     }
                 }
             } footer: {
-                Text(L("소리가 멈춘 뒤에도 끌 때까지 창은 깜빡입니다."))
+                Text(L("소리가 멈춘 뒤에도 끌 때까지 창은 깜빡여요."))
                     .font(.caption)
                     .foregroundStyle(.secondary)
             }
             Section {
                 PresetEditor(settings: settings)
             } footer: {
-                Text(L("시계 창과 목록 창의 시간 버튼입니다. 분 단위로 쉼표를 넣어 적고 Return을 누릅니다. 6개까지 씁니다."))
+                Text(L("시계 창과 목록 창의 시간 버튼이에요. 분 단위로 쉼표를 넣어 적고 Return을 눌러요. 6개까지 써요."))
                     .font(.caption)
                     .foregroundStyle(.secondary)
             }
@@ -191,7 +195,7 @@ struct SettingsView: View {
                     }
                 }
             } footer: {
-                Text(L("Mac의 소리를 꺼 두면 알람도 들리지 않습니다."))
+                Text(L("Mac의 소리를 꺼 두면 알람도 들리지 않아요."))
                     .font(.caption)
                     .foregroundStyle(.secondary)
             }
@@ -207,7 +211,7 @@ struct SettingsView: View {
         let panel = NSOpenPanel()
         panel.allowedContentTypes = [.audio]
         panel.allowsMultipleSelection = false
-        panel.message = L("알람으로 쓸 소리 파일을 고르세요. Clocky 폴더로 복사해 둡니다.")
+        panel.message = L("알람으로 쓸 소리 파일을 고르세요. Clocky 폴더로 복사해 둬요.")
         NSApp.activate(ignoringOtherApps: true)
         guard panel.runModal() == .OK, let url = panel.url else { return }
         if let id = AlarmSound.importFile(url) {
@@ -215,7 +219,7 @@ struct SettingsView: View {
             settings.alarmSound = id
         } else {
             let alert = NSAlert()
-            alert.messageText = L("이 파일은 소리로 열 수 없습니다.")
+            alert.messageText = L("이 파일은 소리로 열 수 없어요.")
             alert.runModal()
         }
     }
@@ -356,7 +360,7 @@ private struct HotKeyEditor: View {
             }
         }
         HStack {
-            Text(message ?? L("Esc를 누르면 입력을 취소합니다."))
+            Text(message ?? L("Esc를 누르면 입력을 취소해요."))
                 .font(.caption)
                 .foregroundStyle(message == nil ? Color.secondary : Color.red)
             Spacer()
@@ -397,7 +401,7 @@ private struct HotKeyEditor: View {
             return
         }
         if let other = HotKeyAction.allCases.first(where: { $0 != action && settings.hotKeys[$0.rawValue] == combo }) {
-            message = L("%@에서 쓰는 단축키입니다.", other.title)
+            message = L("%@에서 쓰는 단축키예요.", other.title)
             return
         }
         settings.hotKeys[action.rawValue] = combo
@@ -418,7 +422,7 @@ private struct CalendarSettings: View {
                     feedRow(feed)
                 }
                 if settings.calendarFeeds.isEmpty {
-                    Text(L("연결한 캘린더가 없습니다"))
+                    Text(L("연결한 캘린더가 없어요"))
                         .foregroundStyle(.secondary)
                 }
                 HStack {
@@ -429,7 +433,7 @@ private struct CalendarSettings: View {
             } header: {
                 Text(L("iCal 주소 (구글 캘린더 개인 계정 등)"))
             } footer: {
-                Text(L("구글 캘린더 웹 → 설정 → 왼쪽에서 캘린더 고르기 → 캘린더 통합 → \"iCal 형식의 비공개 주소\"를 복사해 붙여 넣습니다. 이 주소를 아는 사람은 일정을 볼 수 있으니 다른 곳에 올리지 마세요."))
+                Text(L("구글 캘린더 웹 → 설정 → 왼쪽에서 캘린더 고르기 → 캘린더 통합 → \"iCal 형식의 비공개 주소\"를 복사해 붙여 넣어요. 이 주소를 아는 사람은 일정을 볼 수 있으니 다른 곳에 올리지 마세요."))
                     .font(.caption)
                     .foregroundStyle(.secondary)
             }
@@ -449,7 +453,7 @@ private struct CalendarSettings: View {
                         .disabled(sync.isRefreshing || !settings.calendarFeeds.contains(where: \.enabled))
                 }
             } footer: {
-                Text(L("15분마다, 그리고 Mac이 깨어날 때 새로 받습니다. Mac을 쓰는 동안(Clocky가 켜져 있고 잠자기 중이 아닐 때) 울립니다."))
+                Text(L("15분마다, 그리고 Mac이 깨어날 때 새로 받아요. Mac을 쓰는 동안(Clocky가 켜져 있고 잠자기 중이 아닐 때) 울려요."))
                     .font(.caption)
                     .foregroundStyle(.secondary)
             }
@@ -499,7 +503,7 @@ private struct CalendarSettings: View {
 
     private var lastRefreshText: String {
         let dates = settings.calendarFeeds.compactMap { sync.statuses[$0.id]?.lastSuccess }
-        guard let last = dates.max() else { return L("아직 받지 않았습니다") }
+        guard let last = dates.max() else { return L("아직 받지 않았어요") }
         return L("마지막으로 받은 시각 %@", settings.timeText(last))
     }
 
@@ -516,8 +520,8 @@ enum CalendarAddPrompt {
 
         let alert = NSAlert()
         alert.messageText = L("캘린더 추가")
-        var info = L("구글 캘린더 웹 → 설정 → 왼쪽에서 캘린더 고르기 → 캘린더 통합에서 \"iCal 형식의 비공개 주소\"를 복사해 붙여 넣습니다.")
-        info += "\n\n" + L("회사·학교 계정은 관리자가 비공개 주소를 막아 두어 이 항목이 없을 수 있습니다. 그럴 때는 위의 Mac 캘린더 앱 연동을 쓰거나, 이미 공개해 둔 캘린더라면 \"iCal 형식의 공개 주소\"를 넣어도 됩니다.")
+        var info = L("구글 캘린더 웹 → 설정 → 왼쪽에서 캘린더 고르기 → 캘린더 통합에서 \"iCal 형식의 비공개 주소\"를 복사해 붙여 넣어요.")
+        info += "\n\n" + L("회사·학교 계정은 관리자가 비공개 주소를 막아 두어 이 항목이 없을 수 있어요. 그럴 때는 위의 Mac 캘린더 앱 연동을 쓰거나, 이미 공개해 둔 캘린더라면 \"iCal 형식의 공개 주소\"를 넣어도 돼요.")
         if let problem { info = problem + "\n\n" + info }
         alert.informativeText = info
         alert.accessoryView = field
@@ -533,11 +537,11 @@ enum CalendarAddPrompt {
         case nil:
             break
         case .invalid?:
-            run(sync: sync, initial: text, problem: L("주소가 올바르지 않습니다."))
+            run(sync: sync, initial: text, problem: L("주소가 올바르지 않아요."))
         case .notSecure?:
-            run(sync: sync, initial: text, problem: L("https:// 또는 webcal:// 로 시작하는 주소만 넣을 수 있습니다."))
+            run(sync: sync, initial: text, problem: L("https:// 또는 webcal:// 로 시작하는 주소만 넣을 수 있어요."))
         case .duplicate?:
-            run(sync: sync, initial: text, problem: L("이미 넣은 주소입니다."))
+            run(sync: sync, initial: text, problem: L("이미 넣은 주소예요."))
         }
     }
 
@@ -564,7 +568,7 @@ private struct MacCalendarSection: View {
                 switch mac.access {
                 case .granted:
                     if mac.calendars.isEmpty {
-                        Text(L("Mac 캘린더 앱에 캘린더가 없습니다. 인터넷 계정에서 구글 계정을 추가하세요."))
+                        Text(L("Mac 캘린더 앱에 캘린더가 없어요. 인터넷 계정에서 구글 계정을 추가하세요."))
                             .foregroundStyle(.secondary)
                     }
                     ForEach(accounts, id: \.self) { account in
@@ -588,13 +592,13 @@ private struct MacCalendarSection: View {
                         .foregroundStyle(.secondary)
                 case .notDetermined:
                     HStack {
-                        Text(L("캘린더 접근을 허용해야 일정을 읽을 수 있습니다."))
+                        Text(L("캘린더 접근을 허용해야 일정을 읽을 수 있어요."))
                         Spacer()
                         Button(L("접근 허용…")) { mac.requestAccess { sync.recompute() } }
                     }
                 case .denied, .writeOnly, .restricted:
                     VStack(alignment: .leading, spacing: 6) {
-                        Text(L("캘린더 접근이 허용되지 않았습니다. 시스템 설정 → 개인정보 보호 및 보안 → 캘린더에서 Clocky를 \"전체 접근\"으로 바꾸세요."))
+                        Text(L("캘린더 접근이 허용되지 않았어요. 시스템 설정 → 개인정보 보호 및 보안 → 캘린더에서 Clocky를 \"전체 접근\"으로 바꾸세요."))
                             .foregroundStyle(.red)
                         Button(L("시스템 설정 열기")) { MacCalendarSource.openPrivacySettings() }
                     }
@@ -604,7 +608,7 @@ private struct MacCalendarSection: View {
             Text(L("Mac 캘린더 앱 (회사 구글 계정 등)"))
         } footer: {
             HStack(alignment: .top) {
-                Text(L("시스템 설정 → 인터넷 계정에 구글 계정을 추가하면 그 일정이 Mac 캘린더 앱으로 들어옵니다. Apple 계정은 필요 없습니다."))
+                Text(L("시스템 설정 → 인터넷 계정에 구글 계정을 추가하면 그 일정이 Mac 캘린더 앱으로 들어와요. Apple 계정은 필요 없어요."))
                     .font(.caption)
                     .foregroundStyle(.secondary)
                 Spacer()

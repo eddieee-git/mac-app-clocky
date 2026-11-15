@@ -18,10 +18,10 @@ labels: bug
 
 
 **환경 · Environment**
-- Clocky 버전 · version (설정 → 일반 · Settings → General):
+- Clocky 버전 · version (설정 · Settings):
 - macOS 버전 · version:
 - Mac (예: MacBook Air M2 · e.g. MacBook Air M2):
-- 캘린더 연동 · Calendar (없음 / Mac 캘린더 / iCal 주소 · none / Mac Calendar / iCal address):
+- 캘린더 연동 (없음 / Mac 캘린더 / iCal 주소) · Calendar (none / Mac Calendar / iCal address):
 
 **스크린샷 · Screenshots**
 <!-- iCal 비밀 주소가 보이지 않게 가려 주세요. · Please hide any secret iCal address. -->

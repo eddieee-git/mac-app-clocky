@@ -1,3 +1,7 @@
+> 문서·UI 규칙은 ../mac-app/STYLE.md를 따른다. 다르게 할 때는 여기에 이유를 적는다.
+
+> 업데이트 코드(`AppUpdater.swift`)는 다섯 앱 공통이다. 여기서 고치지 않고 ../mac-app/shared/AppUpdater.swift를 고친 뒤 ../mac-app/scripts/sync-shared.sh로 복사한다. 이 앱에만 해당하는 값은 `UpdaterSetup.swift`에 있다. 시험할 때는 디버그 빌드에서 `-debugUpdateURL <주소>`, `-debugUpdatePublicKey <키>`, `-debugAppVersion <버전>`을 쓴다.
+
 # Clocky 개발 안내
 
 메뉴바에 사는 넘김시계 타이머·알람·캘린더 알림 앱. 사용자 문서는 README.md(한국어)·README.en.md, 설치는 docs/install*.md, 바뀐 점은 CHANGELOG.md. 이 파일은 개발을 이어받는 사람(과 Claude)을 위한 것이다.
@@ -23,7 +27,7 @@
 | ClockySettings.swift | 설정 값, 알람 소리, **화면 문구 영어 표(`Localization.english`)** |
 | ICalendar.swift / CalendarSync.swift | iCal 해석(RRULE·EXDATE·시간대 등)과 주소에서 받아 오기 |
 | MacCalendarSource.swift | EventKit으로 Mac 캘린더 앱 일정 읽기 |
-| UpdateChecker.swift | GitHub 최신 릴리스 확인, dmg를 다운로드 폴더에 받아 SHA-256 확인 후 열기 |
+| AppUpdater.swift(공통) / UpdaterSetup.swift / UpdateCleanup.swift | GitHub 최신 릴리스 확인, dmg를 다운로드 폴더에 받아 SHA-256·서명 확인 후 열기 / Clocky 값 / 받은 dmg 정리 |
 | HotKey.swift / MenuBarIcon.swift / AppDelegate.swift | 전역 단축키, 메뉴바 아이콘, 메뉴와 앱 연결 |
 
 - 화면 문구는 `L("한국어")`로 쓰고 영어는 `Localization.english`에 넣는다. **표에 같은 열쇠가 두 번 들어가면 실행 중에 죽는다.**
@@ -58,7 +62,7 @@ swift scripts/make-icon.swift # 앱 아이콘 다시 그리기
 
 ## 릴리스 서명 키
 
-- Ed25519 비밀키는 저장소 밖 `~/.clocky-release/signing-key`(권한 600)에 있다. 공개키는 `UpdateChecker.releasePublicKey`에 들어 있다.
+- Ed25519 비밀키는 저장소 밖 `~/.clocky-release/signing-key`(권한 600)에 있다. 공개키는 `UpdaterSetup.swift`의 `AppUpdater.appPublicKey`에 들어 있다.
 - `swift scripts/release-key.swift public`은 공개키를 보여 준다(없으면 새로 만든다). `sign <dmg> <버전>`은 `<dmg>.sig`를 만든다. 서명 내용은 `clocky-release:<버전>:<dmg SHA-256>`.
 - **키를 잃어버리면 이미 배포한 앱이 새 버전을 받지 못한다.** 안전한 곳(암호 관리자 등)에 백업하고, 다른 Mac에서 릴리스하려면 같은 자리에 복사한다. 키를 바꾸면 사용자는 한 번 직접 업데이트해야 한다.
 - 단위 시험 `서명_스크립트와_앱의_공개키가_맞다`는 키가 있는 Mac에서만 돌며, 앱의 공개키가 비밀키와 짝인지 확인한다.

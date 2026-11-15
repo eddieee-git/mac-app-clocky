@@ -67,8 +67,8 @@ enum UpdateCleanup {
     private static func askToTrash(_ file: URL) -> Bool {
         NSApp.activate(ignoringOtherApps: true)
         let alert = NSAlert()
-        alert.messageText = L("Clocky를 %@ 버전으로 업데이트했습니다", AppVersion.current)
-        alert.informativeText = L("받아 둔 설치 파일은 이제 필요 없습니다: %@", file.lastPathComponent)
+        alert.messageText = L("Clocky를 %@ 버전으로 업데이트했어요", AppVersion.current)
+        alert.informativeText = L("받아 둔 설치 파일은 이제 필요 없어요: %@", file.lastPathComponent)
         alert.addButton(withTitle: L("휴지통으로 옮기기"))
         alert.addButton(withTitle: L("그대로 두기"))
         return alert.runModal() == .alertFirstButtonReturn

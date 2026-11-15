@@ -145,7 +145,7 @@ struct FlipTimerView: View {
                     // 울리는 동안 창의 다른 곳을 누르면 꺼지지만, 이 버튼은 눌린다.
                     Button(L("%d분 뒤 다시 울림", store.snoozeMinutes)) { store.snooze() }
                         .controlSize(.small)
-                        .help(L("S 키로도 됩니다"))
+                        .help(L("S 키로도 돼요"))
                         .background(GeometryReader { geometry in
                             Color.clear.preference(key: SnoozeFrameKey.self, value: geometry.frame(in: .global))
                         })
@@ -159,7 +159,7 @@ struct FlipTimerView: View {
         } else if let alarm = store.selectedAlarm {
             alarmControls(alarm)
         } else {
-            Text(L("알람 추가를 눌러 시각을 등록합니다"))
+            Text(L("알람 추가를 눌러 시각을 등록해요"))
                 .font(.system(size: 12))
                 .foregroundStyle(.secondary)
         }
@@ -253,7 +253,7 @@ struct FlipTimerView: View {
         field.placeholderString = "5:00"
         let alert = NSAlert()
         alert.messageText = L("시간 입력")
-        alert.informativeText = L("분, 분:초, 또는 시:분:초로 입력합니다. 예: 90, 5:30, 1:30:00")
+        alert.informativeText = L("분, 분:초, 또는 시:분:초로 입력해요. 예: 90, 5:30, 1:30:00")
         alert.accessoryView = field
         alert.addButton(withTitle: L("설정"))
         alert.addButton(withTitle: L("취소"))
@@ -295,7 +295,7 @@ struct FlipTimerView: View {
                             ForEach(store.timers) { timerRow($0).id($0.id) }
                         } else {
                             if store.alarms.isEmpty && todayEvents.isEmpty {
-                                Text(L("등록된 알람이 없습니다"))
+                                Text(L("등록된 알람이 없어요"))
                                     .font(.system(size: 12))
                                     .foregroundStyle(.secondary)
                                     .padding(.top, 20)

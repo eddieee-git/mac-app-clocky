@@ -46,7 +46,7 @@ at(3.8) {
   alertButton(L("추가"))?.performClick(nil)
 }
 at(4.6) {
-  check(alertWindow != nil && alertText.contains(L("https:// 또는 webcal:// 로 시작하는 주소만 넣을 수 있습니다.")), "잘못된 주소면 이유와 함께 다시 뜸: \(alertText.prefix(80))")
+  check(alertWindow != nil && alertText.contains(L("https:// 또는 webcal:// 로 시작하는 주소만 넣을 수 있어요.")), "잘못된 주소면 이유와 함께 다시 뜸: \(alertText.prefix(80))")
   check(alertField?.stringValue == "http://example.com/a.ics", "넣었던 글이 그대로 남음")
   if let w = alertWindow { shot(w, "calendar-add-error-\(lang)") }
   alertButton(L("취소"))?.performClick(nil)
