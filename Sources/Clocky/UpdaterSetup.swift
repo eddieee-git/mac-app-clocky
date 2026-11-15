@@ -1,4 +1,4 @@
-import Foundation
+import AppKit
 
 /// 공통 업데이트(AppUpdater.swift)에 Clocky 정보를 넣는다. AppUpdater.swift는 mac-app/shared에서 복사해 오므로 여기만 고친다.
 extension AppUpdater {
@@ -12,10 +12,17 @@ extension AppUpdater {
         repo: "eddieee-git/mac-app-clocky",
         publicKey: appPublicKey,
         signatureFormat: appSignatureFormat,
-        // 앱 샌드박스라 자기 자신을 바꿀 수 없다. 확인한 dmg를 다운로드 폴더에 받아 연다.
-        installMode: .openDownloadedDMG,
         isEnglish: { Localization.language == .english },
         // 0.2.2까지 쓰던 "업데이트 자동 확인" 설정
-        legacyAutoCheckKey: "checkForUpdates"
+        legacyAutoCheckKey: "checkForUpdates",
+        // 0.3부터 샌드박스를 껐으므로 다른 앱과 같이 바꿔 넣고 다시 켠다.
+        // 울리는 중이거나 2분 안에 울릴 것이 있으면 자동 설치를 미룬다.
+        canRestartNow: {
+            MainActor.assumeIsolated {
+                guard let store = (NSApp.delegate as? AppDelegate)?.window.store else { return true }
+                if store.isRinging { return false }
+                return store.nextAlert.map { $0.date.timeIntervalSinceNow > 120 } ?? true
+            }
+        }
     ))
 }

@@ -57,20 +57,24 @@ When you turn on **Settings → Calendar → Alert for Mac Calendar events**, ma
 
 ## Update
 
-Clocky checks GitHub for a new version once a day. When there is one, the menu bar menu shows **Get New Version, Clocky …**, and so does **Settings → General → Updates**. To check right away, choose **Check for Updates…** from the menu. You can turn off automatic checks in Settings.
+Clocky checks GitHub for a new version once a day. When there is one, the menu bar menu shows **Install Version 0.x.x…**, and so does **Settings → General → Updates**. To check right away, choose **Check for Updates…** from the menu. Click **Install and Relaunch** to download the new version, replace Clocky, and open it again.
 
-1. Choose **Get New Version…** → **Download**. Clocky saves `Clocky 0.x.x.dmg` to your Downloads folder and opens it. Clocky checks that the file matches the one on GitHub (SHA-256) and that the developer's signature is valid. It won't download a file that's unsigned or doesn't match.
-2. Click **Quit Clocky** in the window that explains the next steps.
-3. In the window that opened, drag Clocky to the Applications folder to replace the old app, then open Clocky again.
-4. If the security warning appears again, allow it as above. If you use the Mac Calendar option, macOS may ask for calendar access again.
+- Clocky installs an update only after checking that the file matches the one on GitHub (SHA-256) and that the developer's signature is valid. It won't install a file that's unsigned or doesn't match.
+- Because Clocky downloads the file itself, the security warning and **Open Anyway** don't come back.
+- Clocky can update itself only when it's somewhere it can write to, such as the Applications folder.
+- If you use the Mac Calendar option, macOS may ask for calendar access again after an update. Allow it.
 
-Version 0.2.0 doesn't check for updates, so update from 0.2.0 by hand once:
+Turn off automatic checks with **Check for new versions automatically** in Settings → General → Updates. Turn on **Install new versions automatically** to have Clocky install updates on its own while you're not using it (off by default). If something is ringing or will ring within 2 minutes, it waits for a later chance.
+
+**From 0.2.x to 0.3**: 0.2.x runs in the App Sandbox and can't replace itself. This one time, drag Clocky from the dmg that 0.2.x downloaded and opened into the Applications folder. The first time 0.3 opens, it moves your alarms, timers, settings, calendars, and sound files out of the sandbox folder to the usual places, and offers to move the downloaded dmg to the Trash. After that, updates install from inside the app.
+
+**On 0.2.0, or to update by hand**
 
 1. Click the menu bar icon → **Quit Clocky**.
 2. Open the new `Clocky-<version>.dmg` and drag Clocky to the Applications folder to replace the old app.
-3. If the security warning appears again, allow it as above. If you use the Mac Calendar option, macOS may ask for calendar access again.
+3. If the security warning appears again, allow it as above.
 
-Your settings, alarms, and connected calendars are stored separately from the app and stay as they are. If Clocky downloaded the dmg, the new version asks whether to move it to the Trash the first time it opens.
+Your settings, alarms, and connected calendars are stored separately from the app and stay as they are.
 
 ## Troubleshooting
 
@@ -115,8 +119,8 @@ If something still isn't working, open an [issue](https://github.com/eddieee-git
 1. Click the menu bar icon → **Quit Clocky**.
 2. Move Clocky from the Applications folder to the Trash.
 
-To also remove your settings, alarms, connected calendars, and sound files, move the `~/Library/Containers/com.eddieee.Clocky` folder to the Trash in Finder, or run the command below. If macOS asks whether Terminal may access another app's data, allow it.
+To also remove your settings, alarms, connected calendars, and sound files, run the command below. The last folder is the one 0.2.x used (Clocky leaves it in place when it moves your data out of the sandbox). If macOS asks whether Terminal may access another app's data, allow it.
 
 ```bash
-rm -rf ~/Library/Containers/com.eddieee.Clocky
+rm -rf ~/Library/Preferences/com.eddieee.Clocky.plist ~/Library/Application\ Support/Clocky ~/Library/Containers/com.eddieee.Clocky
 ```

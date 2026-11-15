@@ -20,7 +20,7 @@
 
 ### Clocky가 지키는 것
 
-- 앱 샌드박스와 강화 런타임을 써요. 네트워크는 iCal 주소 받기와 GitHub 업데이트 확인에만 쓰고, 자기 폴더 밖의 파일은 직접 고른 소리 파일과 업데이트 dmg(다운로드 폴더)만 다뤄요.
+- 강화 런타임을 써요. 앱 안에서 스스로 업데이트하도록 0.3부터는 앱 샌드박스를 쓰지 않아요(다른 eddieee 앱과 같아요). 네트워크는 iCal 주소 받기와 GitHub 업데이트 확인·내려받기에만 써요.
 - iCal 주소는 https만 받고 화면에는 비밀 부분을 가려요.
 - 업데이트는 https GitHub 주소에서만 받고, GitHub가 알려 준 SHA-256과 만든 사람의 Ed25519 서명이 맞을 때만 설치해요.
 - Apple 공증은 받지 않았어요. 처음 실행할 때 보안 경고가 나오는 이유예요([설치](README.md#설치)).
@@ -43,7 +43,7 @@ Clocky is a free app made by one person, so replies may take a while. Confirmed 
 
 ### What Clocky protects
 
-- App Sandbox and Hardened Runtime. The network is used only to download iCal addresses and to check GitHub for updates. Outside its own folder, Clocky touches only sound files you pick and the update dmg in your Downloads folder.
+- Hardened Runtime. Since 0.3, Clocky doesn't use the App Sandbox, so it can update itself from inside the app, like the other eddieee apps. The network is used only to download iCal addresses and to check for and download updates from GitHub.
 - Only https iCal addresses are accepted, and the secret part is hidden on screen.
 - Updates come only from https GitHub addresses and are installed only when they match the SHA-256 from GitHub and the developer's Ed25519 signature.
 - Clocky isn't notarized by Apple, which is why macOS shows a security warning on first launch ([Install](README.en.md#install)).

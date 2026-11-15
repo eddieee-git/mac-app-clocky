@@ -27,11 +27,13 @@
 | ClockySettings.swift | 설정 값, 알람 소리, **화면 문구 영어 표(`Localization.english`)** |
 | ICalendar.swift / CalendarSync.swift | iCal 해석(RRULE·EXDATE·시간대 등)과 주소에서 받아 오기 |
 | MacCalendarSource.swift | EventKit으로 Mac 캘린더 앱 일정 읽기 |
-| AppUpdater.swift(공통) / UpdaterSetup.swift / UpdateCleanup.swift | GitHub 최신 릴리스 확인, dmg를 다운로드 폴더에 받아 SHA-256·서명 확인 후 열기 / Clocky 값 / 받은 dmg 정리 |
+| AppUpdater.swift(공통) / UpdaterSetup.swift / UpdateCleanup.swift | GitHub 최신 릴리스 확인, SHA-256·서명 확인 뒤 바꿔 넣고 다시 켜기 / Clocky 값(울리는 중엔 자동 설치 미룸) / 0.2.x가 받아 둔 dmg 정리 |
+| SandboxMigration.swift | 0.2.x 샌드박스 컨테이너의 설정·파일을 처음 한 번 일반 위치로 옮기기(main.swift에서 설정을 읽기 전에) |
 | HotKey.swift / MenuBarIcon.swift / AppDelegate.swift | 전역 단축키, 메뉴바 아이콘, 메뉴와 앱 연결 |
 
 - 화면 문구는 `L("한국어")`로 쓰고 영어는 `Localization.english`에 넣는다. **표에 같은 열쇠가 두 번 들어가면 실행 중에 죽는다.**
-- 샌드박스 권한(Resources/Clocky.entitlements): 네트워크 클라이언트, 캘린더, 사용자가 고른 파일 읽기, 다운로드 폴더 읽기·쓰기. 설정은 `~/Library/Containers/com.eddieee.Clocky`에 있다.
+- 0.3부터 앱 샌드박스를 쓰지 않는다(다른 앱처럼 앱 안에서 바꿔 넣으려고). 권한(Resources/Clocky.entitlements)은 강화 런타임에서 캘린더를 읽기 위한 것 하나뿐이다. 설정은 `~/Library/Preferences/com.eddieee.Clocky.plist`, 캘린더 캐시와 내 소리는 `~/Library/Application Support/Clocky`. 0.2.x의 `~/Library/Containers/com.eddieee.Clocky`는 옮긴 뒤에도 지우지 않는다.
+- 주의: 컨테이너가 있으면 `defaults read com.eddieee.Clocky`는 컨테이너 쪽을 읽는다. 지금 설정은 `plutil -p ~/Library/Preferences/com.eddieee.Clocky.plist`로 본다.
 - `#if DEBUG`에서만 쓰는 시험용 설정: `debugAppVersion`, `debugUpdateURL`.
 
 ## 빌드와 시험
@@ -41,6 +43,7 @@ scripts/build-app.sh          # build/Clocky.app, build/Clocky-<버전>.dmg
 scripts/test.sh               # 단위 시험(Swift Testing)
 scripts/gui-test.sh           # 창을 띄우는 시험 전부. 이름을 주면 그것만: scripts/gui-test.sh update
 scripts/gui-test.sh readme-shots   # README 이미지를 build/shots에 찍는다(한국어·영어)
+scripts/e2e-update.sh         # 실제 Clocky가 서명된 새 버전을 받아 바꿔 넣고 다시 켜는지(시험용 번들 ID, 1분쯤)
 swift scripts/make-icon.swift # 앱 아이콘 다시 그리기
 ```
 
@@ -71,6 +74,7 @@ swift scripts/make-icon.swift # 앱 아이콘 다시 그리기
 
 - GitHub 저장소의 비공개 취약점 신고(private vulnerability reporting)를 켜 두었다. SECURITY.md의 신고 경로가 이것을 쓴다.
 
+- 0.3부터 앱 샌드박스를 껐다. 샌드박스 앱은 /Applications의 자기 자신을 바꿀 수 없어 업데이트가 "dmg 받아 열기"에 머물렀기 때문이다. 다른 다섯 앱도 샌드박스 없이 배포한다. 대신 받은 업데이트는 SHA-256과 Ed25519 서명을 확인한다.
 - iCal 비밀 주소는 키체인이 아니라 UserDefaults에 둔다. 임시 서명은 빌드마다 서명이 달라져, 키체인에 두면 업데이트할 때마다 macOS가 키체인 접근 암호를 묻기 때문이다. 대신 문서에 저장 위치와 백업에 들어간다는 점을 적었다.
 
 ## 남은 일

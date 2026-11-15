@@ -2,20 +2,9 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
-	<!-- 앱 샌드박스: 자기 컨테이너 밖의 파일과 네트워크에 손대지 못한다. -->
-	<key>com.apple.security.app-sandbox</key>
-	<true/>
-	<!-- 설정에 넣은 iCal 주소에서 일정을 받아 온다. 다른 곳으로는 아무것도 보내지 않는다. -->
-	<key>com.apple.security.network.client</key>
-	<true/>
-	<!-- 설정에서 켜면 Mac 캘린더 앱의 일정을 읽는다. 처음 한 번 macOS가 허용을 묻는다. -->
+	<!-- 0.3부터 앱 샌드박스를 쓰지 않는다(업데이트를 앱 안에서 바꿔 넣으려고). 강화 런타임은 그대로 켠다.
+	     강화 런타임에서 Mac 캘린더 앱의 일정을 읽으려면 이 권한이 있어야 한다. 처음 한 번 macOS가 허용을 묻는다. -->
 	<key>com.apple.security.personal-information.calendars</key>
-	<true/>
-	<!-- 설정에서 사용자가 직접 고른 소리 파일만 읽는다. -->
-	<key>com.apple.security.files.user-selected.read-only</key>
-	<true/>
-	<!-- 업데이트를 고르면 새 버전 dmg를 다운로드 폴더에 받는다. 그 밖에는 이 폴더를 읽지도 쓰지도 않는다. -->
-	<key>com.apple.security.files.downloads.read-write</key>
 	<true/>
 </dict>
 </plist>

@@ -34,8 +34,8 @@ enum AppVersion {
     }
 }
 
-/// Clocky는 샌드박스 앱이라 새 dmg를 다운로드 폴더에 받아 열어 준다(AppUpdater의 openDownloadedDMG).
-/// 새 버전으로 처음 켜면 그 dmg를 정리할지 묻는다.
+/// 0.2.x(샌드박스)는 새 dmg를 다운로드 폴더에 받아 열어 주었다. 그렇게 0.3으로 넘어오면
+/// 처음 켤 때 그 dmg를 정리할지 묻는다. 0.3부터는 AppUpdater가 바꿔 넣으므로 dmg가 남지 않는다.
 enum UpdateCleanup {
     static let downloadedKey = "downloadedUpdate", lastRunKey = "lastRunVersion"  // downloadedUpdate는 AppUpdater.downloadedKey와 같다
 

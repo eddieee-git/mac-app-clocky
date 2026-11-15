@@ -28,7 +28,7 @@ Clocky keeps a small window on screen whose digit cards flip every second, like 
 - **All Timers & Alarms**: Find every timer, alarm, and event in one window, and turn on, turn off, or delete several at once.
 - **Keyboard**: Shortcuts inside the window, plus global shortcuts that work while you're in other apps. See [Shortcuts](#shortcuts).
 - **Accessibility**: VoiceOver reads the clock face as one sentence, such as "Noodles, 2 minutes 46 seconds left." With Reduce Motion on, the digits change without flipping and the red background doesn't blink.
-- **In-app updates**: Clocky tells you about new versions, then downloads the dmg, checks its signature, and opens it.
+- **In-app updates**: Clocky tells you about new versions, checks the signature, then installs the update and relaunches.
 - **English and Korean**: Switch in Settings. Clocky starts in your Mac's language.
 
 ## Install
@@ -44,7 +44,7 @@ Requires a Mac with Apple silicon (M1 or later) and macOS 13 or later. Intel Mac
    If you prefer Terminal: `xattr -dr com.apple.quarantine /Applications/Clocky.app`
 4. An alarm-clock icon appears in the menu bar and the clock window opens.
 
-Clocky checks for a new version once a day and tells you in the menu bar menu. Click it to download and open the new dmg (Clocky runs in the App Sandbox, so you drag it into Applications yourself). See the [install guide](docs/install.en.md) for details and [troubleshooting](docs/install.en.md#troubleshooting).
+Clocky checks for a new version once a day and tells you in the menu bar menu. Click **Install and Relaunch** to download the new version, replace Clocky, and open it again. Turn on **Install new versions automatically** in Settings to have Clocky install updates on its own while you're not using it. See the [install guide](docs/install.en.md) for details and [troubleshooting](docs/install.en.md#troubleshooting).
 
 ## How to use
 
@@ -149,7 +149,7 @@ Global shortcuts work even while you're using other apps. Change or clear them i
 
 | Tab | Settings |
 |---|---|
-| General | Language, Open at Login, Confirm before deleting, menu bar countdowns, Check for new versions automatically |
+| General | Language, Open at Login, Confirm before deleting, menu bar countdowns, Check for new versions automatically (on by default) and Install them automatically (off by default) |
 | Timers & Alarms | Flash before ringing (off, 5, 10, 30, or 60 seconds), Snooze length (1–30 minutes), Keep ringing for (10 seconds–5 minutes), Timer buttons (minutes, up to 6) |
 | Sound | Alarm sound (plays when you pick it), add or remove your own sound files, Volume |
 | Calendar | Mac Calendar app and which calendars, add, turn on, or remove iCal addresses, Alert timing, all-day and declined events |
@@ -162,10 +162,10 @@ Global shortcuts work even while you're using other apps. Change or clear them i
 
 - Settings, alarms, and events stay on this Mac and aren't sent anywhere. Clocky has no third-party libraries.
 - Clocky uses the internet only to download events from the iCal addresses you add and to check GitHub for a new version once a day. It accepts https iCal addresses only and hides the secret part on screen. When Clocky checks for updates, GitHub sees your IP address and Clocky's version, as with any web request. You can turn off update checks in Settings.
-- Secret iCal addresses are stored in Clocky's settings file. macOS keeps other apps from reading it, but backups such as Time Machine include it.
-- Clocky downloads and opens a new version only when its developer's signature (Ed25519) matches. Even if someone took over the GitHub account and replaced the file, Clocky wouldn't download it.
+- Secret iCal addresses are stored in Clocky's settings file (`~/Library/Preferences/com.eddieee.Clocky.plist`). It's an ordinary settings file in your user account, so other apps running as you can read it, and backups such as Time Machine include it.
+- Clocky downloads and installs a new version only when its developer's signature (Ed25519) matches. Even if someone took over the GitHub account and replaced the file, Clocky wouldn't download it.
 - Clocky asks for calendar access only when you turn on the Mac Calendar app option, and reads only each event's title, time, and your response.
-- The app is signed with the App Sandbox and the Hardened Runtime. Outside its own folder, it reads only sound files you pick in Settings, and when you choose to update, it saves the new dmg to your Downloads folder. Settings are stored in `~/Library/Containers/com.eddieee.Clocky`.
+- The app is signed with the Hardened Runtime. Since 0.3, Clocky doesn't use the App Sandbox, so it can update itself from inside the app, like the other eddieee apps. Settings are stored in `~/Library/Preferences/com.eddieee.Clocky.plist`, and calendar caches and your sound files in `~/Library/Application Support/Clocky`.
 
 **Where do I look for help with the security warning, sound, or calendars?**
 See [Troubleshooting in the install guide](docs/install.en.md#troubleshooting). If you find a security problem, please report it privately as described in [SECURITY.md](SECURITY.md).
@@ -174,7 +174,7 @@ See [Troubleshooting in the install guide](docs/install.en.md#troubleshooting). 
 
 1. Menu bar Clocky icon → **Quit Clocky**
 2. Move Clocky from Applications to the Trash
-3. (Optional) To remove settings, alarms, connected calendars and your sound files too: `rm -rf ~/Library/Containers/com.eddieee.Clocky`
+3. (Optional) To remove settings, alarms, connected calendars and your sound files too: `rm -rf ~/Library/Preferences/com.eddieee.Clocky.plist ~/Library/Application\ Support/Clocky ~/Library/Containers/com.eddieee.Clocky` (the last folder is from 0.2.x)
 
 ## Build from source
 
