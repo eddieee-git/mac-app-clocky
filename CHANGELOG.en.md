@@ -2,7 +2,7 @@
 
 Details for each version are in [docs/releases](docs/releases) and [GitHub Releases](https://github.com/eddieee-git/mac-app-clocky/releases). 한국어: [CHANGELOG.md](CHANGELOG.md)
 
-## Next version
+## 0.3.0 (2026-11-15)
 
 - Updates install from inside the app and relaunch: **Install and Relaunch**, like the other apps, and **Install new versions automatically** in Settings (off by default). Automatic installs wait while something is ringing or will ring within 2 minutes
 - No more App Sandbox: settings, alarms, calendars, and sound files move to the usual places the first time the new version opens (the sandbox folder stays)

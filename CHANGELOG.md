@@ -2,7 +2,7 @@
 
 버전마다 자세한 내용은 [docs/releases](docs/releases)와 [GitHub 릴리스](https://github.com/eddieee-git/mac-app-clocky/releases)에 있어요. English: [CHANGELOG.en.md](CHANGELOG.en.md)
 
-## 다음 버전
+## 0.3.0 (2026-11-15)
 
 - 업데이트를 앱 안에서 설치하고 다시 시작: 다른 앱과 같은 **설치하고 다시 시작**, 설정의 **새 버전 자동으로 설치**(기본 끔). 울리는 중이거나 2분 안에 울릴 것이 있으면 자동 설치를 미룸
 - 앱 샌드박스 끄기: 설정·알람·캘린더·내 소리 파일을 처음 켤 때 일반 위치로 옮김(샌드박스 폴더는 남겨 둠)
