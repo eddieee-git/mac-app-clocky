@@ -2,6 +2,15 @@
 
 Details for each version are in [docs/releases](docs/releases) and [GitHub Releases](https://github.com/eddieee-git/mac-app-clocky/releases). 한국어: [CHANGELOG.md](CHANGELOG.md)
 
+## 0.2.3 (2026-11-15)
+
+- Updates use the updater shared by all five apps: automatic checks (on by default), **Check Now** in Settings, and **Get New Version…** in the menu bar menu
+- The downloaded dmg is verified by signature and SHA-256, then opened from Downloads (as before)
+- Finds the latest version from the releases page even when GitHub's rate limit is hit
+- About tab in Settings: version, GitHub, changelog, problem reports, and other apps
+- Settings… and the update item sit together in the menu bar menu
+- Friendlier tone in Korean messages
+
 ## 0.2.2 (2026-11-13)
 
 - Signed updates: a new version is downloaded only when the developer's Ed25519 signature matches. The version is signed too, so an old file can't pass as a new one
