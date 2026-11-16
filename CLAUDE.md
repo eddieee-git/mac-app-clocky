@@ -34,7 +34,7 @@
 - 화면 문구는 `L("한국어")`로 쓰고 영어는 `Localization.english`에 넣는다. **표에 같은 열쇠가 두 번 들어가면 실행 중에 죽는다.**
 - 0.3부터 앱 샌드박스를 쓰지 않는다(다른 앱처럼 앱 안에서 바꿔 넣으려고). 권한(Resources/Clocky.entitlements)은 강화 런타임에서 캘린더를 읽기 위한 것 하나뿐이다. 설정은 `~/Library/Preferences/com.eddieee.Clocky.plist`, 캘린더 캐시와 내 소리는 `~/Library/Application Support/Clocky`. 0.2.x의 `~/Library/Containers/com.eddieee.Clocky`는 옮긴 뒤에도 지우지 않는다.
 - 주의: 컨테이너가 있으면 `defaults read com.eddieee.Clocky`는 컨테이너 쪽을 읽는다. 지금 설정은 `plutil -p ~/Library/Preferences/com.eddieee.Clocky.plist`로 본다.
-- `#if DEBUG`에서만 쓰는 시험용 설정: `debugAppVersion`, `debugUpdateURL`.
+- `#if DEBUG`에서만 쓰는 시험용 설정: `debugAppVersion`, `debugUpdateURL`, `debugUpdatePublicKey`(실행 인자 `-이름 값`으로도 줄 수 있다).
 
 ## 빌드와 시험
 
@@ -54,14 +54,13 @@ swift scripts/make-icon.swift # 앱 아이콘 다시 그리기
 
 ## 릴리스
 
-1. Resources/Info.plist의 `CFBundleShortVersionString`(예: 0.2.1)과 `CFBundleVersion`(빌드 번호, 하나씩 올림)을 올린다.
-2. CHANGELOG.md의 한국어·영어 칸에 버전 제목과 바뀐 점을 적는다.
-3. `scripts/build-app.sh`로 dmg를 만든다. 서명 키가 있으면 `build/Clocky-X.Y.Z.dmg.sig`도 함께 만든다(없으면 경고). `shasum -a 256 build/Clocky-X.Y.Z.dmg`를 적어 둔다.
-4. 커밋하고 push한 뒤(사용자 허락이 있을 때), `gh release create vX.Y.Z build/Clocky-X.Y.Z.dmg build/Clocky-X.Y.Z.dmg.sig --title "Clocky X.Y.Z" --notes-file <노트> --latest`.
-   - **0.2.2부터 앱은 `.sig`가 없거나 서명이 맞지 않는 릴리스는 받지 않는다.** `.sig`를 꼭 함께 올린다.
-   - 파일 이름은 `Clocky-X.Y.Z.dmg`(0.2.1까지는 `Clocky.dmg`). 앱은 `.dmg`로 끝나는 첫 파일을 받으므로 릴리스에 dmg는 하나만 올린다. 태그는 `v` + 버전. 초안·시험판은 앱이 무시한다.
-   - 노트 첫머리 약 600자가 앱의 업데이트 창에 보이므로 바뀐 점을 맨 앞에 한국어·영어로 쓴다. 설치 방법과 SHA-256을 함께 적는다.
-5. `curl -s https://api.github.com/repos/eddieee-git/mac-app-clocky/releases/latest`로 태그와 dmg의 `digest`가 맞는지 확인한다.
+1. Resources/Info.plist의 `CFBundleShortVersionString`과 `CFBundleVersion`(빌드 번호, 하나씩 올림)을 올린다.
+2. `docs/releases/vX.Y.Z.md`(GitHub 릴리스 본문, ../mac-app/templates/release-note.md 참고)를 쓰고, `CHANGELOG.md`·`CHANGELOG.en.md` 맨 위에 `## X.Y.Z (날짜)`와 짧은 명사형 항목을 더한다.
+   - 노트 첫머리 약 600자가 앱의 업데이트 창에 보이므로 바뀐 점을 맨 앞에 한국어 · 영어로 쓴다. 업데이트 방법과 SHA-256을 함께 적는다(이전 노트 v0.3.0.md 참고).
+3. `scripts/test.sh` → `scripts/e2e-update.sh` → `scripts/build-app.sh`. 서명 키가 있으면 `build/Clocky-X.Y.Z.dmg.sig`도 만든다(없으면 경고). `shasum -a 256 build/Clocky-X.Y.Z.dmg`를 노트에 넣는다.
+4. 다시 설치하고 커밋한 뒤, push는 사용자가 허락할 때(릴리스하라는 말은 push 허락으로 쳐 왔다). `gh release create vX.Y.Z build/Clocky-X.Y.Z.dmg build/Clocky-X.Y.Z.dmg.sig --target main --title "Clocky X.Y.Z" --notes-file docs/releases/vX.Y.Z.md --latest`.
+   - **0.2.2부터 앱은 `.sig`가 없거나 서명이 맞지 않는 릴리스는 받지 않는다.** dmg를 먼저, `.sig`를 함께 올린다. 태그는 `v` + 버전. 초안·시험판은 앱이 무시한다.
+5. 확인: `curl -s https://api.github.com/repos/eddieee-git/mac-app-clocky/releases/latest`의 태그·dmg `digest`, 그리고 dmg와 `.sig`를 다시 받아 SHA-256과 서명(`clocky-release:<버전>:<SHA-256>`, 공개키는 UpdaterSetup.swift)을 검증한다.
 
 ## 릴리스 서명 키
 
@@ -77,8 +76,21 @@ swift scripts/make-icon.swift # 앱 아이콘 다시 그리기
 - 0.3부터 앱 샌드박스를 껐다. 샌드박스 앱은 /Applications의 자기 자신을 바꿀 수 없어 업데이트가 "dmg 받아 열기"에 머물렀기 때문이다. 다른 다섯 앱도 샌드박스 없이 배포한다. 대신 받은 업데이트는 SHA-256과 Ed25519 서명을 확인한다.
 - iCal 비밀 주소는 키체인이 아니라 UserDefaults에 둔다. 임시 서명은 빌드마다 서명이 달라져, 키체인에 두면 업데이트할 때마다 macOS가 키체인 접근 암호를 묻기 때문이다. 대신 문서에 저장 위치와 백업에 들어간다는 점을 적었다.
 
+## 지금 상태 (2026-11-16)
+
+- **GitHub 최신 릴리스: v0.3.0** (2026-11-15). 코드의 버전도 0.3.0(빌드 6), 다음에 낼 버전은 0.3.1. `main`은 GitHub와 같고 작업 폴더는 깨끗하다.
+- 0.3.0에서 바뀐 것: 앱 샌드박스를 끄고 업데이트를 앱 안에서 바꿔 넣는다(`installMode` 기본값 `.replaceInPlace`, 설정의 "새 버전 자동으로 설치"). 처음 켤 때 `SandboxMigration`이 0.2.x 컨테이너의 데이터를 옮긴다.
+- 이 Mac: /Applications에 0.3.0이 설치되어 있고 컨테이너에서 옮기기가 끝났다(`migratedFromSandbox` = true). 옮기기 전 일반 위치에 있던 0.1 시절 설정은 `~/Library/Application Support/Clocky/Preferences before 0.3.plist`에 남아 있다.
+- 0.2.x 사용자는 0.3.0으로 갈 때 한 번만 dmg에서 끌어다 놓아 바꾼다(릴리스 노트·설치 안내에 적음). 0.3.0 → 0.3.1부터 앱 안 설치.
+- 확인한 것: 단위 시험 45개, GUI 시험(update·calendar·basics 등), `scripts/e2e-update.sh`(실제 Clocky 디버그 빌드가 0.3.0 → 0.3.1로 스스로 바꿔 넣고 다시 켬), 이 Mac 실제 데이터로 옮기기, 올라간 dmg의 SHA-256과 서명.
+- 확인하지 못한 것: 실제 GitHub 릴리스로 0.3.0이 스스로 업데이트하는 것은 0.3.1을 낼 때 처음 일어난다. 0.3.1을 내면 이 Mac에서 메뉴의 **새 버전 0.3.1 설치…**로 확인한다.
+- 저장소 규칙(../mac-app/CLAUDE.md): 앞으로는 `main`에 바로 커밋하지 말고 작업 브랜치에서 한 뒤 합친다.
+
 ## 남은 일
 
 - Mac 캘린더 앱 연동은 실제 캘린더로 아직 시험하지 못했다(다른 Mac에서 확인 예정).
 - macOS 13·14·15에서는 아직 실행해 보지 않았다.
 - Floaty(별도 저장소)의 README에 있는 Clocky 소개 문구는 Floaty 쪽에서 고친다.
+- README 스크린샷 다시 찍기: 설정 창에 정보 탭과 업데이트 칸이 생겼다. `scripts/gui-test.sh readme-shots`(화면 잠금이 풀려 있어야 함)로 찍고 사용자가 보고 고른다.
+- `AppDelegate`의 `AppUpdater.shared` 줄에서 Swift 6 대비 경고 하나(Swift 5 모드라 동작엔 영향 없음, 공통 문제라 ../mac-app에서 다룬다).
+- 사용자 할 일: 서명 키 `~/.clocky-release/signing-key` 백업(암호 관리자 등).
