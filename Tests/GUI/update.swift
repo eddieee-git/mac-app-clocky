@@ -12,6 +12,8 @@ let port = Int.random(in: 20000...40000)
 let base = "http://127.0.0.1:\(port)"
 UserDefaults.standard.set(lang, forKey: "language"); UserDefaults.standard.set(true, forKey: "hasLaunched")
 UserDefaults.standard.set("0.2.0", forKey: "debugAppVersion")
+// 시험 실행은 .app 번들이 아니라 앱 안에서 설치할 수 없다. 그럴 때 자동 확인이 한 번 띄우는 알림 창이 시험을 멈추지 않게, 이미 알린 것으로 해 둔다.
+UserDefaults.standard.set("0.3.0", forKey: "offeredUpdateVersion")
 UserDefaults.standard.set("\(base)/latest.json", forKey: "debugUpdateURL")
 // 시험용 서명 키. 앱이 이 공개키를 믿게 한다.
 let testKey = Curve25519.Signing.PrivateKey()
@@ -71,7 +73,7 @@ at(1.0) {
   check(u.available == nil && u.lastCheck == nil, "처음에는 아직 확인 전")
   check(menuTitles().contains(ko ? "업데이트 확인…" : "Check for Updates…"), "메뉴에 업데이트 확인: \(menuTitles())")
   check(u.autoCheck, "자동 확인은 기본으로 켜짐")
-  check(!u.canInstallInPlace, "샌드박스 앱이라 앱 안에서 바꿔 넣지 않음")
+  check(!u.canInstallInPlace, "시험 실행(번들 아님)에서는 앱 안에서 바꿔 넣지 않음")
   // 켠 지 15초 뒤 저절로 확인하는 것과 같은 길을 바로 부른다.
   u.checkIfDue()
 }

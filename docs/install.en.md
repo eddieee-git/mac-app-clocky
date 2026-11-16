@@ -57,14 +57,14 @@ When you turn on **Settings → Calendar → Alert for Mac Calendar events**, ma
 
 ## Update
 
-Clocky checks GitHub for a new version once a day. When there is one, the menu bar menu shows **Install Version 0.x.x…**, and so does **Settings → General → Updates**. To check right away, choose **Check for Updates…** from the menu. Click **Install and Relaunch** to download the new version, replace Clocky, and open it again.
+Clocky checks GitHub for a new version once a day. When there is one, the menu bar menu shows **Install Version 0.x.x…**, and so does **Settings → General → Updates**. To check right away, choose **Check for Updates…** from the menu. When Clocky finds one, it downloads it, replaces itself and relaunches on its own while you aren't using it. If you check yourself or choose **Install Version 0.x.x…** from the menu, it installs right away without asking.
 
 - Clocky installs an update only after checking that the file matches the one on GitHub (SHA-256) and that the developer's signature is valid. It won't install a file that's unsigned or doesn't match.
 - Because Clocky downloads the file itself, the security warning and **Open Anyway** don't come back.
 - Clocky can update itself only when it's somewhere it can write to, such as the Applications folder.
 - If you use the Mac Calendar option, macOS may ask for calendar access again after an update. Allow it.
 
-Turn off automatic checks with **Check for new versions automatically** in Settings → General → Updates. Turn on **Install new versions automatically** to have Clocky install updates on its own while you're not using it (off by default). If something is ringing or will ring within 2 minutes, it waits for a later chance.
+Turn off automatic checks with **Check for new versions automatically** in Settings → General → Updates. If you'd rather not have updates installed on their own, turn off **Install new versions automatically** (on by default). With it off, Clocky tells you once when a new version is out. If something is ringing or will ring within 2 minutes, it waits for a later chance.
 
 **From 0.2.x to 0.3**: 0.2.x runs in the App Sandbox and can't replace itself. This one time, drag Clocky from the dmg that 0.2.x downloaded and opened into the Applications folder. The first time 0.3 opens, it moves your alarms, timers, settings, calendars, and sound files out of the sandbox folder to the usual places, and offers to move the downloaded dmg to the Trash. After that, updates install from inside the app.
 

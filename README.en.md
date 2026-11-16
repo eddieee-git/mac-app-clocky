@@ -44,7 +44,7 @@ Requires a Mac with Apple silicon (M1 or later) and macOS 13 or later. Intel Mac
    If you prefer Terminal: `xattr -dr com.apple.quarantine /Applications/Clocky.app`
 4. An alarm-clock icon appears in the menu bar and the clock window opens.
 
-Clocky checks for a new version once a day and tells you in the menu bar menu. Click **Install and Relaunch** to download the new version, replace Clocky, and open it again. Turn on **Install new versions automatically** in Settings to have Clocky install updates on its own while you're not using it. See the [install guide](docs/install.en.md) for details and [troubleshooting](docs/install.en.md#troubleshooting).
+Clocky checks for a new version once a day and, when there is one, downloads it, replaces itself and relaunches on its own while you aren't using it (it waits if something is ringing). Checking yourself with **Check for Updates…** in the menu bar menu also installs right away without asking. If you'd rather not have updates installed on their own, turn off **Install new versions automatically** in Settings. See the [install guide](docs/install.en.md) for details and [troubleshooting](docs/install.en.md#troubleshooting).
 
 ## How to use
 
@@ -149,7 +149,7 @@ Global shortcuts work even while you're using other apps. Change or clear them i
 
 | Tab | Settings |
 |---|---|
-| General | Language, Open at Login, Confirm before deleting, menu bar countdowns, Check for new versions automatically (on by default) and Install them automatically (off by default) |
+| General | Language, Open at Login, Confirm before deleting, menu bar countdowns, Check for new versions automatically (on by default) and Install them automatically (on by default) |
 | Timers & Alarms | Flash before ringing (off, 5, 10, 30, or 60 seconds), Snooze length (1–30 minutes), Keep ringing for (10 seconds–5 minutes), Timer buttons (minutes, up to 6) |
 | Sound | Alarm sound (plays when you pick it), add or remove your own sound files, Volume |
 | Calendar | Mac Calendar app and which calendars, add, turn on, or remove iCal addresses, Alert timing, all-day and declined events |
