@@ -153,8 +153,9 @@ struct SettingsView: View {
                         Text($0 < 60 ? L("%d초", $0) : L("%d분", $0 / 60)).tag($0)
                     }
                 }
+                Toggle(L("곧 울릴 것이 있으면 Mac이 잠들지 않게"), isOn: $settings.keepMacAwake)
             } footer: {
-                Text(L("소리가 멈춘 뒤에도 끌 때까지 창은 깜빡여요."))
+                Text(L("소리가 멈춘 뒤에도 끌 때까지 창은 깜빡여요.") + "\n" + L("타이머가 도는 동안과 알람·일정이 10분 안에 울릴 때 Mac이 저절로 잠들지 않게 해요. 화면은 꺼질 수 있어요. 덮개를 닫으면 잠들어서 울리지 않아요."))
                     .font(.caption)
                     .foregroundStyle(.secondary)
             }

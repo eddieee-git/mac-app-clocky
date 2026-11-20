@@ -19,6 +19,8 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
     private var subscriptions: Set<AnyCancellable> = []
     private var showingAlarmIcon = false
     private var hotKeys: [HotKey] = []
+    /// 곧 울릴 것이 있으면 Mac이 저절로 잠들지 않게 한다.
+    private let sleepGuard = SleepGuard()
 
     private static let launchedKey = "hasLaunched"
 
@@ -36,7 +38,11 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
 
         // 타이머가 도는 동안 메뉴바에 남은 시간을 띄운다.
         window.store.$now.combineLatest(window.store.$timers, window.store.$alarms, window.store.$calendarEvents)
-            .sink { [weak self] _, _, _, _ in self?.updateStatusTitle() }
+            .sink { [weak self] _, _, _, _ in
+                self?.updateStatusTitle()
+                // 값이 바뀐 직후(willSet)에 불리므로 한 박자 뒤에 본다.
+                DispatchQueue.main.async { self.map { $0.sleepGuard.update(needsAwake: $0.window.store.needsMacAwake) } }
+            }
             .store(in: &subscriptions)
         // 단축키를 새로 누르는 동안에는 모두 풀어 둔다.
         settings.$hotKeys.combineLatest(settings.$isRecordingHotKey)
@@ -59,6 +65,9 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
         if Bundle.main.bundleURL.pathExtension == "app", InstallLocation.needsMove(Bundle.main.bundlePath) {
             DispatchQueue.main.async { InstallLocation.warn() }
         }
+
+        // Clocky가 꺼져 있는 동안 놓친 것이 있으면 창에서 알린다.
+        if !window.store.missedAlerts.isEmpty { window.show(takeFocus: false) }
 
         // 처음 실행하면 무엇이 생겼는지 보이도록 창을 띄운다.
         if !UserDefaults.standard.bool(forKey: Self.launchedKey) {
@@ -136,6 +145,14 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
         let store = window.store
         let now = Date()
         var lines: [(String, String)] = []
+        for missed in store.missedAlerts.suffix(3) {
+            lines.append((L("⚠︎ 놓친 알림: %@ · %@", missed.title, settings.dayText(missed.date) + " " + settings.timeText(missed.date)), "missed:"))
+        }
+        // 곧(1시간 안) 울릴 것이 있는데 Mac 소리가 꺼져 있으면 알린다.
+        let soon = store.timers.contains { $0.phase == .running } || (store.nextAlert.map { $0.date.timeIntervalSince(now) < 3600 } ?? false)
+        if soon && SystemVolume.isSilent {
+            lines.append((L("🔇 Mac 소리가 꺼져 있어 알람이 들리지 않아요"), "volume:"))
+        }
         for item in store.timers {
             let name = store.displayName(of: item)
             switch item.phase {
@@ -222,6 +239,9 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
     }
 
     @objc private func showItem(_ sender: NSMenuItem) {
+        if let key = sender.representedObject as? String, key == "missed:" || key == "volume:" {
+            return window.show()
+        }
         guard let key = sender.representedObject as? String,
               let id = key.split(separator: ":").last.flatMap({ UUID(uuidString: String($0)) }) else { return window.show() }
         // 일정은 목록 창에서 자세히 본다.

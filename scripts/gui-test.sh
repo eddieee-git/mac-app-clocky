@@ -16,11 +16,11 @@ trap 'rm -rf "$work"' EXIT
 sed '/testTarget/d' Package.swift > "$work/Package.swift"
 
 scenarios=("$@")
-(( ${#scenarios} )) || scenarios=(basics restore keyboard windows calendar calendar-add update)
+(( ${#scenarios} )) || scenarios=(basics restore keyboard windows calendar calendar-add update notices)
 failed=0
 skipped=()
 # 화면이 잠기면 클릭과 키가 창에 닿지 않고 스크린샷도 비므로, 이런 시나리오는 실패 대신 건너뛴다.
-needs_screen=(basics restore keyboard windows readme-shots)
+needs_screen=(basics restore keyboard windows readme-shots notices)
 locked() { ioreg -n Root -d1 | grep -q '"CGSSessionScreenIsLocked"=Yes' }
 for name in $scenarios; do
     if (( ${needs_screen[(Ie)$name]} )) && locked; then
@@ -35,7 +35,7 @@ for name in $scenarios; do
     cp "Tests/GUI/$name.swift" "$work/Sources/Clocky/main.swift"
     (cd "$work" && swift build 2>&1 | grep -E "error|warning" || true)
     langs=(ko)
-    [[ $name == readme-shots || $name == windows || $name == calendar || $name == update ]] && langs=(${=CLOCKY_LANGS:-ko en})
+    [[ $name == readme-shots || $name == windows || $name == calendar || $name == update || $name == notices ]] && langs=(${=CLOCKY_LANGS:-ko en})
     for lang in $langs; do
         echo "== $name ($lang)"
         home=$(mktemp -d)

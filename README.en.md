@@ -114,8 +114,11 @@ Clocky refreshes every 15 minutes and when your Mac wakes. To refresh right away
 ### Good to know
 
 - Timers and alarms are kept when you restart Clocky, and running timers keep running.
+- While a timer runs, or an alarm or event will ring within 10 minutes, Clocky keeps your Mac from going to sleep on its own (the display can still turn off). If you close the lid, your Mac sleeps and Clocky can't ring. Turn this off in Settings → Timers & Alarms.
 - A timer that finished or an alarm that passed while Clocky was quit rings right away if you reopen Clocky within an hour.
 - A timer that finished while your Mac was asleep rings when it wakes. Alarms ring only if they passed less than an hour earlier.
+- Alarms, timers, and events that were too late to ring appear as **Missed** in the clock window and the menu bar menu. Click **OK** to clear them.
+- If something will ring soon and your Mac's sound is off (muted or volume at zero), the clock window and the menu bar menu tell you.
 - If you change time zones or set the clock, alarms move to the new local time, while running timers and snoozes keep the time that actually passed.
 - If you unplug a display and the window ends up off screen, it moves to a remaining display.
 
@@ -150,7 +153,7 @@ Global shortcuts work even while you're using other apps. Change or clear them i
 | Tab | Settings |
 |---|---|
 | General | Language, Open at Login, Confirm before deleting, menu bar countdowns, Check for new versions automatically (on by default) and Install them automatically (on by default) |
-| Timers & Alarms | Flash before ringing (off, 5, 10, 30, or 60 seconds), Snooze length (1–30 minutes), Keep ringing for (10 seconds–5 minutes), Timer buttons (minutes, up to 6) |
+| Timers & Alarms | Flash before ringing (off, 5, 10, 30, or 60 seconds), Snooze length (1–30 minutes), Keep ringing for (10 seconds–5 minutes), Keep Mac awake when something will ring soon (on by default), Timer buttons (minutes, up to 6) |
 | Sound | Alarm sound (plays when you pick it), add or remove your own sound files, Volume |
 | Calendar | Mac Calendar app and which calendars, add, turn on, or remove iCal addresses, Alert timing, all-day and declined events |
 | Shortcuts | Change global shortcuts, list of window shortcuts |

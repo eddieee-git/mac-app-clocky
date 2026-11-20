@@ -88,12 +88,12 @@ You opened Clocky straight from the dmg window. Quit Clocky, drag it to the Appl
 With many menu bar icons, Clocky's can hide behind the notch or other icons. Press ⌃⌥C to open the clock window. On macOS 26 and later, also check that Clocky is allowed in **System Settings → Menu Bar**.
 
 **There's no sound**
-- Check that your Mac isn't muted and that sound isn't going to another device, such as Bluetooth headphones.
+- Check that your Mac isn't muted and that sound isn't going to another device, such as Bluetooth headphones. If something will ring soon and the sound is off, the clock window and the menu bar menu show a 🔇 warning.
 - In **Settings → Sound**, check the volume and click ▶︎ to listen.
 - The sound stops after the set time (1 minute by default). The window keeps flashing until you stop it.
 
 **An alarm didn't ring**
-- Clocky can't ring while the lid is closed or your Mac is asleep. When it wakes, alarms that passed less than an hour earlier ring right away (15 minutes for calendar alerts).
+- Clocky can't ring while the lid is closed or your Mac is asleep. Clocky keeps your Mac from going to sleep on its own while a timer runs or something will ring within 10 minutes, but it can't stop sleep when you close the lid or put the Mac to sleep yourself. When it wakes, alarms that passed less than an hour earlier ring right away (15 minutes for calendar alerts). Later ones appear as **Missed**.
 - Clocky can't ring while it's quit. Turn on Open at Login.
 - Check the alarm's **On** switch and its repeat days.
 

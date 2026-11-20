@@ -2,6 +2,13 @@
 
 버전마다 자세한 내용은 [docs/releases](docs/releases)와 [GitHub 릴리스](https://github.com/eddieee-git/mac-app-clocky/releases)에 있어요. English: [CHANGELOG.en.md](CHANGELOG.en.md)
 
+## 다음 버전
+
+- 곧 울릴 것이 있으면 Mac이 저절로 잠들지 않게: 타이머가 도는 동안과 알람·일정 10분 전부터(설정에서 끔)
+- 놓친 알림: 잠자기나 앱이 꺼져 있어 울리지 못한 알람·타이머·일정을 시계 창과 메뉴바 메뉴에 보여 줌
+- 곧 울릴 것이 있는데 Mac 소리가 꺼져 있으면 경고
+- 지난 날짜를 "어제"로 표시
+
 ## 0.3.1 (2026-11-19)
 
 - 새 버전 자동으로 설치를 기본으로 켬: Clocky를 쓰고 있지 않을 때 알아서 받아 바꿔 넣고 다시 켬(울리는 중이면 미룸)

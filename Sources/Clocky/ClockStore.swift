@@ -214,6 +214,41 @@ final class ClockStore: ObservableObject {
     /// 잠자기 등으로 늦게 확인했을 때 일정 알람은 이 안이면 늦게라도 울린다.
     static let eventLateLimit: TimeInterval = 15 * 60
 
+    // MARK: 놓친 알림과 잠자기
+    /// 너무 늦어(잠자기, 앱이 꺼져 있던 동안) 울리지 못한 것. 사용자가 확인하면 비운다.
+    struct MissedAlert: Identifiable, Equatable {
+        let id = UUID()
+        let title: String
+        let date: Date
+    }
+    @Published private(set) var missedAlerts: [MissedAlert] = []
+    /// 놓친 것이 새로 생기면 불린다. 창을 띄우는 데 쓴다.
+    var onMissed: (() -> Void)?
+    /// 알람·일정이 이만큼 안으로 다가오면 Mac이 저절로 잠들지 않게 한다.
+    static let keepAwakeWindow: TimeInterval = 10 * 60
+    /// 설정에서 끌 수 있다.
+    var keepsMacAwake = true { didSet { scheduleTick() } }
+
+    /// 지금 Mac이 잠들면 안 되는지: 타이머가 돌거나, 울리는 중이거나, 10분 안에 울릴 것이 있을 때.
+    var needsMacAwake: Bool {
+        guard keepsMacAwake else { return false }
+        if isRinging || timers.contains(where: { $0.phase == .running }) { return true }
+        if alarms.contains(where: { $0.snoozeUntil.map { $0.timeIntervalSince(now) <= Self.keepAwakeWindow } ?? false }) { return true }
+        guard let next = nextAlert?.date else { return false }
+        return next.timeIntervalSince(now) <= Self.keepAwakeWindow
+    }
+
+    func clearMissed() {
+        missedAlerts = []
+    }
+
+    private func addMissed(_ items: [MissedAlert]) {
+        guard !items.isEmpty else { return }
+        // 오래된 것부터 많아야 10개.
+        missedAlerts = Array((missedAlerts + items).sorted { $0.date < $1.date }.suffix(10))
+        onMissed?()
+    }
+
     init(defaults: UserDefaults = .standard) {
         self.defaults = defaults
         mode = defaults.string(forKey: Keys.mode).flatMap(Mode.init) ?? .timer
@@ -222,8 +257,16 @@ final class ClockStore: ObservableObject {
 
         var timers: [TimerItem]
         let timerData = defaults.data(forKey: Keys.timers)
+        var missedAtLaunch: [MissedAlert] = []
         if let data = timerData, let saved = try? JSONDecoder().decode([SavedTimer].self, from: data) {
             timers = saved.enumerated().map { Self.restore($1, index: $0, at: start) }
+            // 꺼져 있는 동안 1시간보다 오래전에 끝난 타이머는 울리지 않고 놓친 것으로 알린다.
+            for (index, item) in saved.enumerated() where item.phase == TimerItem.Phase.running.rawValue {
+                if let end = item.endDate, start.timeIntervalSince(end) >= Self.lateLimit {
+                    missedAtLaunch.append(MissedAlert(title: timers[index].name.trimmingCharacters(in: .whitespaces).isEmpty
+                                                        ? L("타이머 %d", timers[index].number) : timers[index].name, date: end))
+                }
+            }
         } else if let data = timerData {
             // 읽지 못한 값은 덮어쓰기 전에 따로 남겨 둔다.
             Self.keepUnreadable(data, key: Keys.timers, in: defaults)
@@ -256,6 +299,10 @@ final class ClockStore: ObservableObject {
             if alarms[i].enabled, let missed = alarms[i].next, missed <= start, start.timeIntervalSince(missed) < Self.lateLimit {
                 continue
             }
+            if alarms[i].enabled, let missed = alarms[i].next, missed <= start {
+                let name = alarms[i].name.trimmingCharacters(in: .whitespaces)
+                missedAtLaunch.append(MissedAlert(title: name.isEmpty ? L("알람 %d", alarms[i].number) : alarms[i].name, date: missed))
+            }
             alarms[i].schedule(after: start)
         }
 
@@ -270,6 +317,7 @@ final class ClockStore: ObservableObject {
                 defaults.removeObject(forKey: key)
             }
         }
+        missedAlerts = Array(missedAtLaunch.sorted { $0.date < $1.date }.suffix(10))
         firedEventIDs = Set(defaults.stringArray(forKey: Keys.eventsFired) ?? [])
         skippedEventIDs = Set(defaults.stringArray(forKey: Keys.eventsSkipped) ?? [])
         eventSnoozes = (defaults.dictionary(forKey: Keys.eventSnoozes) as? [String: Date]) ?? [:]
@@ -825,6 +873,10 @@ final class ClockStore: ObservableObject {
                 }
             }
         }
+        // 10분 안으로 들어오는 순간 잠자기 막기를 켜도록 그때 한 번 깨어난다.
+        if keepsMacAwake, let next = nextAlert?.date, next.timeIntervalSince(now) > Self.keepAwakeWindow {
+            dates.append(next.addingTimeInterval(-Self.keepAwakeWindow))
+        }
         if isListDisplayed { dates.append(nextSecond) }
         if isDisplayed {
             // 알람 칸은 지금 시각과 남은 시간을 보여 준다.
@@ -867,18 +919,23 @@ final class ClockStore: ObservableObject {
 
         var newAlarms = alarms
         var newRinging = ringingAlarmIDs
+        var missed: [MissedAlert] = []
         for i in newAlarms.indices {
             if let snooze = newAlarms[i].snoozeUntil, now >= snooze {
                 newAlarms[i].snoozeUntil = nil
                 if now.timeIntervalSince(snooze) < Self.lateLimit {
                     newRinging.insert(newAlarms[i].id)
                     rangAlarm = rangAlarm ?? newAlarms[i].id
+                } else {
+                    missed.append(MissedAlert(title: displayName(of: newAlarms[i]), date: snooze))
                 }
             }
             guard let next = newAlarms[i].next, now >= next else { continue }
             if now.timeIntervalSince(next) < Self.lateLimit {
                 newRinging.insert(newAlarms[i].id)
                 rangAlarm = rangAlarm ?? newAlarms[i].id
+            } else {
+                missed.append(MissedAlert(title: displayName(of: newAlarms[i]), date: next))
             }
             if newAlarms[i].repeats {
                 newAlarms[i].schedule(after: max(now, next))
@@ -898,8 +955,11 @@ final class ClockStore: ObservableObject {
             if now.timeIntervalSince(date) < Self.eventLateLimit {
                 ringingEventIDs.insert(event.id)
                 rangEvent = rangEvent ?? event.id
+            } else {
+                missed.append(MissedAlert(title: "📅 " + event.title, date: date))
             }
         }
+        addMissed(missed)
         if rangEvent != nil && rangAlarm == nil { mode = .alarm }
 
         // 울린 것을 큰 판에 보여 준다. 타이머와 알람이 함께 울리면 타이머를 먼저 보여 준다.

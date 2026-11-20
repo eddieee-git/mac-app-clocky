@@ -22,12 +22,15 @@ final class TimerWindowController: NSObject, NSWindowDelegate {
         // 울릴 때는 창만 앞으로 보이고 키보드는 쓰던 앱에 남긴다. 다른 앱에서 글을 쓰던 중에
         // 다음 글자가 Clocky로 들어가 버리지 않게 한다. 끄기는 창을 누르거나 전역 단축키로 한다.
         store.onRing = { [weak self] in self?.show(takeFocus: false) }
+        // 놓친 알림이 생기면 키보드를 빼앗지 않고 창을 띄워 알린다.
+        store.onMissed = { [weak self] in self?.show(takeFocus: false) }
         store.undoManager = undoManager
         // 설정 창에서 바꾼 값을 바로 반영한다.
         settings.$warningSeconds.sink { [weak self] in self?.store.warningSeconds = $0 }.store(in: &settingSubscriptions)
         settings.$snoozeMinutes.sink { [weak self] in self?.store.snoozeMinutes = $0 }.store(in: &settingSubscriptions)
         settings.$soundLimitSeconds.sink { [weak self] in self?.store.soundLimit = TimeInterval($0) }.store(in: &settingSubscriptions)
         settings.$menuBarShowsAlarm.sink { [weak self] in self?.store.tracksMenuBarAlarm = $0 }.store(in: &settingSubscriptions)
+        settings.$keepMacAwake.sink { [weak self] in self?.store.keepsMacAwake = $0 }.store(in: &settingSubscriptions)
         settings.$timerPresets.sink { [weak self] in self?.store.presets = $0 }.store(in: &settingSubscriptions)
         // 타이머를 띄워 둔 모니터를 빼면 남은 화면으로 옮긴다.
         NotificationCenter.default.addObserver(forName: NSApplication.didChangeScreenParametersNotification,

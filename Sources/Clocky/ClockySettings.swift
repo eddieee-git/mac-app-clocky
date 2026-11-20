@@ -26,6 +26,7 @@ final class ClockySettings: ObservableObject {
     private enum Keys {
         static let language = "language", alarmSound = "alarmSound", volume = "soundVolume"
         static let warning = "warningSeconds", snooze = "snoozeMinutes", soundLimit = "soundLimitSeconds"
+        static let keepMacAwake = "keepMacAwake"
         static let menuBarTimer = "menuBarShowsTimer", menuBarAlarm = "menuBarShowsAlarm", confirmDelete = "confirmDelete"
         static let presets = "timerPresets", hotKeys = "hotKeys"
         static let calendarFeeds = "calendarFeeds", calendarLead = "calendarLeadMinutes"
@@ -66,6 +67,8 @@ final class ClockySettings: ObservableObject {
     @Published var snoozeMinutes: Int { didSet { defaults.set(snoozeMinutes, forKey: Keys.snooze) } }
     /// 끄지 않으면 소리를 몇 초까지 되풀이할지. 깜빡임은 끌 때까지 계속된다.
     @Published var soundLimitSeconds: Int { didSet { defaults.set(soundLimitSeconds, forKey: Keys.soundLimit) } }
+    /// 타이머가 돌거나 10분 안에 울릴 것이 있으면 Mac이 저절로 잠들지 않게 한다. 기본 켬.
+    @Published var keepMacAwake: Bool { didSet { defaults.set(keepMacAwake, forKey: Keys.keepMacAwake) } }
     @Published var menuBarShowsTimer: Bool { didSet { defaults.set(menuBarShowsTimer, forKey: Keys.menuBarTimer) } }
     @Published var menuBarShowsAlarm: Bool { didSet { defaults.set(menuBarShowsAlarm, forKey: Keys.menuBarAlarm) } }
     /// 지우기 전에 묻는다. 꺼 두어도 ⌘Z로 되살릴 수 있다.
@@ -109,6 +112,7 @@ final class ClockySettings: ObservableObject {
         soundVolume = min(max(defaults.object(forKey: Keys.volume) as? Double ?? 1, 0), 1)
         warningSeconds = (defaults.object(forKey: Keys.warning) as? Int).flatMap { Self.warningChoices.contains($0) ? $0 : nil } ?? 10
         snoozeMinutes = (defaults.object(forKey: Keys.snooze) as? Int).flatMap { Self.snoozeChoices.contains($0) ? $0 : nil } ?? 5
+        keepMacAwake = defaults.object(forKey: Keys.keepMacAwake) as? Bool ?? true
         soundLimitSeconds = (defaults.object(forKey: Keys.soundLimit) as? Int)
             .flatMap { Self.soundLimitChoices.contains($0) ? $0 : nil } ?? 60
         menuBarShowsTimer = defaults.object(forKey: Keys.menuBarTimer) as? Bool ?? true
@@ -170,11 +174,12 @@ final class ClockySettings: ObservableObject {
         formatter(language == .korean ? "a h:mm" : "h:mm a").string(from: date)
     }
 
-    /// "오늘", "내일", 그 뒤는 "수요일"·"Wednesday".
+    /// "오늘", "내일", "어제", 그 밖에는 "수요일"·"Wednesday".
     func dayText(_ date: Date) -> String {
         let calendar = Calendar.current
         if calendar.isDateInToday(date) { return L("오늘") }
         if calendar.isDateInTomorrow(date) { return L("내일") }
+        if calendar.isDateInYesterday(date) { return L("어제") }
         return formatter("EEEE").string(from: date)
     }
 
@@ -543,6 +548,17 @@ enum Localization {
         "지금 디스크 이미지(dmg)에서 바로 실행하고 있어요. 이대로는 dmg를 꺼내면 Clocky도 꺼지고, 로그인 시 자동 실행도 되지 않아요.\n\nClocky를 종료한 뒤 dmg 창에서 Clocky를 Applications 폴더로 끌어 놓고, Applications 폴더에서 다시 여세요.": "Clocky is running straight from the disk image (dmg). If you eject the dmg, Clocky quits, and Open at Login won't work.\n\nQuit Clocky, drag it from the dmg window to the Applications folder, and open it from there.",
         "종료하고 Applications 폴더 열기": "Quit and Open Applications Folder",
         "이대로 계속": "Keep Running",
+        // 잠자기·놓친 알림·소리 꺼짐
+        "곧 울릴 것이 있으면 Mac이 잠들지 않게": "Keep Mac awake when something will ring soon",
+        "타이머가 도는 동안과 알람·일정이 10분 안에 울릴 때 Mac이 저절로 잠들지 않게 해요. 화면은 꺼질 수 있어요. 덮개를 닫으면 잠들어서 울리지 않아요.": "While a timer runs, or an alarm or event will ring within 10 minutes, your Mac won't go to sleep on its own. The display can still turn off. If you close the lid, your Mac sleeps and Clocky can't ring.",
+        "놓친 알림": "Missed",
+        "놓친 알림 확인": "Dismiss Missed Alerts",
+        "⚠︎ 놓친 알림: %@ · %@": "⚠︎ Missed: %@ · %@",
+        "Mac이 잠들었거나 Clocky가 꺼져 있어서 울리지 못했어요.": "Your Mac was asleep or Clocky was quit, so these didn't ring.",
+        "🔇 Mac 소리가 꺼져 있어 알람이 들리지 않아요": "🔇 Your Mac's sound is off, so alarms won't be heard",
+        "Mac 소리가 꺼져 있어 알람이 들리지 않아요": "Your Mac's sound is off, so alarms won't be heard",
+        "확인": "OK",
+        "어제": "yesterday",
         // 편집 메뉴
         "편집": "Edit",
         "실행 취소": "Undo",

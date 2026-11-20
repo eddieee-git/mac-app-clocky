@@ -2,6 +2,13 @@
 
 Details for each version are in [docs/releases](docs/releases) and [GitHub Releases](https://github.com/eddieee-git/mac-app-clocky/releases). 한국어: [CHANGELOG.md](CHANGELOG.md)
 
+## Next version
+
+- Keeps your Mac from sleeping on its own while a timer runs and from 10 minutes before an alarm or event (can be turned off in Settings)
+- Missed alerts: alarms, timers, and events that couldn't ring because the Mac was asleep or Clocky was quit appear in the clock window and the menu bar menu
+- Warning when something will ring soon and your Mac's sound is off
+- Past dates show as "yesterday"
+
 ## 0.3.1 (2026-11-19)
 
 - Install new versions automatically is now on by default: Clocky downloads, replaces itself, and relaunches while you're not using it (it waits while something is ringing)

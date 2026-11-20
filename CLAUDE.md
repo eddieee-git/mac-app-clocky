@@ -28,6 +28,7 @@
 | ICalendar.swift / CalendarSync.swift | iCal 해석(RRULE·EXDATE·시간대 등)과 주소에서 받아 오기 |
 | MacCalendarSource.swift | EventKit으로 Mac 캘린더 앱 일정 읽기 |
 | AppUpdater.swift(공통) / UpdaterSetup.swift / UpdateCleanup.swift | GitHub 최신 릴리스 확인, SHA-256·서명 확인 뒤 바꿔 넣고 다시 켜기 / Clocky 값(울리는 중엔 자동 설치 미룸) / 0.2.x가 받아 둔 dmg 정리 |
+| SystemGuards.swift | 곧 울릴 것이 있으면 Mac이 저절로 잠들지 않게(IOPM 단언, `ClockStore.needsMacAwake`), Mac 소리가 꺼졌는지(CoreAudio) |
 | SandboxMigration.swift | 0.2.x 샌드박스 컨테이너의 설정·파일을 처음 한 번 일반 위치로 옮기기(main.swift에서 설정을 읽기 전에) |
 | HotKey.swift / MenuBarIcon.swift / AppDelegate.swift | 전역 단축키, 메뉴바 아이콘, 메뉴와 앱 연결 |
 

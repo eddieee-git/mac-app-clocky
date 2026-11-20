@@ -263,6 +263,53 @@ struct FlipTimerView: View {
         if let seconds = ClockStore.parse(field.stringValue) { store.setDuration(id, seconds) } else { NSSound.beep() }
     }
 
+    // MARK: 알림 띠
+
+    /// 곧(1시간 안) 울릴 것이 있는데 Mac 소리가 꺼져 있는지. 그리는 순간에 본다.
+    private var showsMuteWarning: Bool {
+        let soon = store.timers.contains { $0.phase == .running }
+            || (store.nextAlert.map { $0.date.timeIntervalSince(store.now) < 3600 } ?? false)
+        return soon && SystemVolume.isSilent
+    }
+
+    /// 놓친 알림과 소리 꺼짐 경고. 없으면 아무것도 그리지 않는다.
+    @ViewBuilder
+    private var notices: some View {
+        let missed = store.missedAlerts
+        let muted = showsMuteWarning
+        if !missed.isEmpty || muted {
+            VStack(alignment: .leading, spacing: 3) {
+                if !missed.isEmpty {
+                    HStack {
+                        Label(L("놓친 알림"), systemImage: "exclamationmark.triangle.fill")
+                            .font(.system(size: 11, weight: .semibold))
+                        Spacer()
+                        Button(L("확인")) { store.clearMissed() }
+                            .buttonStyle(.borderless)
+                            .font(.system(size: 11))
+                            .accessibilityLabel(L("놓친 알림 확인"))
+                    }
+                    ForEach(missed.suffix(3)) { item in
+                        Text("\(item.title) · \(settings.dayText(item.date)) \(settings.timeText(item.date))")
+                            .font(.system(size: 11))
+                            .lineLimit(1)
+                    }
+                    .help(L("Mac이 잠들었거나 Clocky가 꺼져 있어서 울리지 못했어요."))
+                }
+                if muted {
+                    Label(L("Mac 소리가 꺼져 있어 알람이 들리지 않아요"), systemImage: "speaker.slash.fill")
+                        .font(.system(size: 11))
+                        .lineLimit(1)
+                }
+            }
+            .padding(.horizontal, 8)
+            .padding(.vertical, 5)
+            .frame(maxWidth: .infinity, alignment: .leading)
+            .background(Color.orange.opacity(0.15), in: RoundedRectangle(cornerRadius: 6))
+            .accessibilityElement(children: .combine)
+        }
+    }
+
     // MARK: 목록
 
     private var list: some View {
@@ -288,6 +335,7 @@ struct FlipTimerView: View {
                     .help(L("설정 (⌘,)"))
                     .accessibilityLabel(L("설정 열기"))
             }
+            notices
             ScrollViewReader { proxy in
                 ScrollView {
                     LazyVStack(spacing: 2) {
