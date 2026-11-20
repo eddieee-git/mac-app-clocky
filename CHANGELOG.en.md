@@ -2,6 +2,12 @@
 
 Details for each version are in [docs/releases](docs/releases) and [GitHub Releases](https://github.com/eddieee-git/mac-app-clocky/releases). 한국어: [CHANGELOG.md](CHANGELOG.md)
 
+## 0.3.1 (2026-11-19)
+
+- Install new versions automatically is now on by default: Clocky downloads, replaces itself, and relaunches while you're not using it (it waits while something is ringing)
+- **Check for Updates…** and **Install Version X…** install right away without asking
+- A window appears only when an update can't be installed from inside the app (once per version for automatic checks)
+
 ## 0.3.0 (2026-11-15)
 
 - Updates install from inside the app and relaunch: **Install and Relaunch**, like the other apps, and **Install new versions automatically** in Settings (off by default). Automatic installs wait while something is ringing or will ring within 2 minutes
