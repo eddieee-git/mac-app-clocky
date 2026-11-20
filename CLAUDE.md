@@ -79,13 +79,14 @@ swift scripts/make-icon.swift # 앱 아이콘 다시 그리기
 
 ## 지금 상태 (2026-11-20)
 
-- **GitHub 최신 릴리스: v0.3.1** (2026-11-19). 코드의 버전도 0.3.1(빌드 7), 다음에 낼 버전은 0.3.2. `main`은 GitHub와 같다.
+- **GitHub 최신 릴리스: v0.3.2** (2026-11-20). 코드의 버전도 0.3.2(빌드 8), 다음에 낼 버전은 0.3.3.
+- 0.3.2: 곧 울릴 것이 있으면 Mac이 저절로 잠들지 않게(`SleepGuard`, 설정 `keepMacAwake` 기본 켬), 놓친 알림(`ClockStore.missedAlerts`, 시계 창 띠와 메뉴 줄), Mac 소리가 꺼져 있으면 경고(`SystemVolume`). 소리 꺼짐 경고와 실제 잠자기 막기는 화면·`pmset -g assertions`로 아직 직접 보지 못했다(단위 시험만).
 - 0.3.0: 앱 샌드박스를 끄고 업데이트를 앱 안에서 바꿔 넣는다. 처음 켤 때 `SandboxMigration`이 0.2.x 컨테이너의 데이터를 옮긴다.
 - 0.3.1: "새 버전 자동으로 설치"가 기본 켬. 직접 확인하거나 설치 메뉴를 누르면 묻지 않고 바로 설치한다(공통 AppUpdater 변경).
 - **실제 앱 안 업데이트 확인함**: 2026-11-20 이 Mac에서 설치된 0.3.0이 GitHub의 v0.3.1을 받아 스스로 바꿔 넣고 다시 켰다(사용자가 메뉴로 실행, 설치 후 코드 서명 온전, 다운로드 폴더에 남은 dmg 없음).
-- 이 Mac: /Applications에 0.3.1. 컨테이너에서 옮기기 끝(`migratedFromSandbox` = true). 0.1 시절 설정은 `~/Library/Application Support/Clocky/Preferences before 0.3.plist`에 남아 있다.
+- 이 Mac: /Applications에는 0.3.2 기능이 든 0.3.1 번호 빌드가 있다. 자동 설치가 켜져 있어 GitHub의 v0.3.2로 저절로 바뀌는지 볼 수 있다. 컨테이너에서 옮기기 끝(`migratedFromSandbox` = true). 0.1 시절 설정은 `~/Library/Application Support/Clocky/Preferences before 0.3.plist`에 남아 있다.
 - 0.2.x 사용자는 0.3.x로 갈 때 한 번만 dmg에서 끌어다 놓아 바꾼다(릴리스 노트·설치 안내에 적음).
-- 시험: 단위 45개, `scripts/e2e-update.sh`, GUI `update`(영어에서 가끔 타이밍으로 실패, 다시 돌리면 통과).
+- 시험: 단위 50개, GUI `notices`, `scripts/e2e-update.sh`, GUI `update`(영어에서 가끔 타이밍으로 실패, 다시 돌리면 통과).
 - 저장소 규칙(../mac-app/CLAUDE.md): `main`에 바로 커밋하지 말고 작업 브랜치에서 한 뒤 합친다.
 
 ## 남은 일
