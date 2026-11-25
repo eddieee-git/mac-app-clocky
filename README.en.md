@@ -215,5 +215,7 @@ See the [changelog](CHANGELOG.en.md) for what's new.
 | <img src="https://raw.githubusercontent.com/eddieee-git/mac-app-floaty/main/docs/images/icon.png" width="32" alt=""> | [Floaty](https://github.com/eddieee-git/mac-app-floaty) | Floating sticky notes, right from the menu bar |
 | <img src="https://raw.githubusercontent.com/eddieee-git/mac-app-gitty/main/docs/images/icon.png" width="32" alt=""> | [Gitty](https://github.com/eddieee-git/mac-app-gitty) | Work with Git repositories like a file manager |
 | <img src="https://raw.githubusercontent.com/eddieee-git/mac-app-grabby/main/docs/images/icon.png" width="32" alt=""> | [Grabby](https://github.com/eddieee-git/mac-app-grabby) | Capture, mark it up in place, and paste right away |
+| <img src="https://raw.githubusercontent.com/eddieee-git/mac-app-keepy/main/docs/images/icon.png" width="32" alt=""> | [Keepy](https://github.com/eddieee-git/mac-app-keepy) | Clipboard history: keep what you copy and paste it again |
+| <img src="https://raw.githubusercontent.com/eddieee-git/mac-app-mdy/main/docs/images/icon.png" width="32" alt=""> | [Mdy](https://github.com/eddieee-git/mac-app-mdy) | Markdown viewer and editor that opens with a double-click |
 | <img src="https://raw.githubusercontent.com/eddieee-git/mac-app-peeky/main/docs/images/icon.png" width="32" alt=""> | [Peeky](https://github.com/eddieee-git/mac-app-peeky) | Bring back menu bar icons hidden behind the notch |
 <!-- more-apps:end -->
